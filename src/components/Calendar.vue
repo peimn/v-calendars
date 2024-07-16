@@ -2,7 +2,7 @@
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
-import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
+import { CalendarDate, getLocalTimeZone, startOfMonth, toCalendar } from '@internationalized/date';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import CalendarNav from './CalendarNav';
@@ -567,9 +567,25 @@ export default {
     getDefaultInitialPage() {
       // 1. Try the fromPage prop
       let page = this.fromPage || this.pageForDate(this.fromDate);
+      if (this.fromPage && this.$locale.calendar !== 'gregory') {
+        const gregoryDate = new CalendarDate(page.year, page.month, page.day ?? 1);
+        const intlDate = toCalendar(gregoryDate, this.$locale.createCalendar);
+        const date = startOfMonth(intlDate);
+        page.year = date.year;
+        page.month = date.month;
+        page.day = date.day;
+      }
       if (!pageIsValid(page)) {
         // 2. Try the toPage prop
         const toPage = this.toPage || this.pageForDate(this.toDate);
+        if (this.toPage && this.$locale.calendar !== 'gregory') {
+          const gregoryDate = new CalendarDate(toPage.year, toPage.month, toPage.day ?? 1);
+          const intlDate = toCalendar(gregoryDate, this.$locale.createCalendar);
+          const date = startOfMonth(intlDate);
+          toPage.year = date.year;
+          toPage.month = date.month;
+          toPage.day = date.day;
+        }
         if (pageIsValid(toPage)) {
           page = addPages(toPage, 1 - this.count);
         }
