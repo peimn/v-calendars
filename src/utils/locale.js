@@ -354,8 +354,8 @@ export default class Locale {
     this.dayNamesShort = this.getDayNames('short');
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
     this.dayNamesNarrow = this.getDayNames('narrow');
-    this.monthNames = this.getMonthNames('long');
-    this.monthNamesShort = this.getMonthNames('short');
+    this.monthNames = this.getMonthNames(calendar, 'long');
+    this.monthNamesShort = this.getMonthNames(calendar, 'short');
     this.amPm = ['am', 'pm'];
     this.monthData = {};
     this.calendar = calendar;
@@ -740,21 +740,62 @@ export default class Locale {
     return null;
   }
 
-  getMonthDates(year = 2000) {
+  getStartingYear(calendar) {
+    switch (calendar) {
+      case 'gregory':
+        return 2000;
+      case 'buddhist':
+        return 2550;
+      case 'ethiopic':
+        return 2000;
+      case 'ethioaa':
+        return 2000;
+      case 'coptic':
+        return 1720;
+      case 'hebrew':
+        return 5750;
+      case 'indian':
+        return 1920;
+      case 'islamic-civil':
+      case 'islamic-tbla':
+      case 'islamic-umalqura':
+        return 1420;
+      case 'japanese':
+        return 1;
+      case 'persian':
+        return 1400;
+      case 'roc':
+        return 100;
+      default:
+        return 2000;
+    }
+  }
+
+  getMonthDates(calendar, year) {
+    if (!calendar) {
+      return [];
+    }
+
+    if (!year) {
+      year = this.getStartingYear(calendar);
+    }
+
+    const createdCalendar = this.createCalendar ?? createCalendar(calendar);
+    const intlDate = new CalendarDate(createdCalendar, year, 1, 1);
     const dates = [];
-    for (let i = 0; i < 12; i++) {
-      dates.push(new Date(year, i, 15));
+    for (let i = 0; i < createdCalendar.getMonthsInYear(intlDate); i++) {
+      dates.push(intlDate.add({ months: i }));
     }
     return dates;
   }
 
-  getMonthNames(length) {
+  getMonthNames(calendar, length) {
     const dtf = new Intl.DateTimeFormat(this.id, {
       month: length,
       timezome: 'UTC',
       calendar,
     });
-    return this.getMonthDates().map(d => dtf.format(d));
+    return this.getMonthDates(calendar).map(d => dtf.format(d.toDate(getLocalTimeZone())));
   }
 
   getWeekdayDates(firstDayOfWeek = this.firstDayOfWeek) {
