@@ -66,8 +66,6 @@ import { childMixin } from '../utils/mixins';
 import { head, last } from '../utils/_';
 import { onSpaceOrEnter, pad } from '../utils/helpers';
 
-const _yearGroupCount = 12;
-
 export default {
   name: 'CalendarNav',
   components: {
@@ -181,8 +179,29 @@ export default {
       }
       return classes;
     },
+    getMaxMonthNumber(calendar) {
+      switch (calendar) {
+        case 'gregory':
+        case 'buddhist':
+        case 'indian':
+        case 'islamic-civil':
+        case 'islamic-tbla':
+        case 'islamic-umalqura':
+        case 'japanese':
+        case 'persian':
+        case 'roc':
+          return 12;
+        case 'coptic':
+        case 'ethiopic':
+        case 'ethioaa':
+        case 'hebrew':
+          return 13;
+        default:
+          return 12;
+      }
+    },
     getYearGroupIndex(year) {
-      return Math.floor(year / _yearGroupCount);
+      return Math.floor(year / this.getMaxMonthNumber(this.locale.calendar));
     },
     getMonthItems(year) {
       const { month: thisMonth, year: thisYear } = this.pageForDate(new Date());
@@ -203,12 +222,12 @@ export default {
     },
     getYearItems(yearGroupIndex) {
       const { _, year: thisYear } = this.pageForDate(new Date());
-      const startYear = yearGroupIndex * _yearGroupCount;
-      const endYear = startYear + _yearGroupCount;
+      const startYear = yearGroupIndex * this.getMaxMonthNumber(this.locale.calendar);
+      const endYear = startYear + this.getMaxMonthNumber(this.locale.calendar);
       const items = [];
       for (let year = startYear; year < endYear; year += 1) {
         let enabled = false;
-        for (let month = 1; month < 12; month++) {
+        for (let month = 1; month < this.getMaxMonthNumber(this.locale.calendar); month++) {
           enabled = this.validator({ month, year });
           if (enabled) break;
         }
