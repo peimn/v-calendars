@@ -962,6 +962,7 @@ export default class Locale {
           end: dateFromTime(23, 59, 59, 999),
         };
         const date = range.start;
+        const localeID = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const id = `${pad(intlDate.toDate(getLocalTimeZone()).getFullYear(), 4)}-${pad(intlDate.toDate(getLocalTimeZone()).getMonth() + 1, 2)}-${pad(intlDate.toDate(getLocalTimeZone()).getDate(), 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
@@ -976,7 +977,7 @@ export default class Locale {
         const onLeft = i === 1;
         const onRight = i === daysInWeek;
         days.push({
-          id,
+          id: localeID,
           label: day.toString(),
           ariaLabel: formatter.format(intlDate.toDate(getLocalTimeZone())),
           day,
