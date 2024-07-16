@@ -915,6 +915,7 @@ export default class Locale {
     const todayDay = today.getDate();
     const todayMonth = today.getMonth() + 1;
     const todayYear = today.getFullYear();
+    let intlDate = new CalendarDate(this.createCalendar, year, month, day);
     const dft = (y, m, d) => (hours, minutes, seconds, milliseconds) =>
       this.normalizeDate({
         year: y,
@@ -950,17 +951,18 @@ export default class Locale {
           prevMonth = false;
           thisMonth = true;
         }
+        intlDate = intlDate.set({ month, year, day });
         // Append day info for the current week
         // Note: this might or might not be an actual month day
         //  We don't know how the UI wants to display various days,
         //  so we'll supply all the data we can
-        const dateFromTime = dft(year, month, day);
+        const dateFromTime = dft(intlDate.toDate(getLocalTimeZone()).getFullYear(), intlDate.toDate(getLocalTimeZone()).getMonth() + 1, intlDate.toDate(getLocalTimeZone()).getDate());
         const range = {
           start: dateFromTime(0, 0, 0),
           end: dateFromTime(23, 59, 59, 999),
         };
         const date = range.start;
-        const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
+        const id = `${pad(intlDate.toDate(getLocalTimeZone()).getFullYear(), 4)}-${pad(intlDate.toDate(getLocalTimeZone()).getMonth() + 1, 2)}-${pad(intlDate.toDate(getLocalTimeZone()).getDate(), 2)}`;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const weeknumber = weeknumbers[w - 1];
@@ -976,7 +978,7 @@ export default class Locale {
         days.push({
           id,
           label: day.toString(),
-          ariaLabel: formatter.format(new Date(year, month - 1, day)),
+          ariaLabel: formatter.format(intlDate.toDate(getLocalTimeZone())),
           day,
           dayFromEnd,
           weekday,
