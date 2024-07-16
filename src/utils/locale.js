@@ -113,11 +113,21 @@ const formatFlags = {
   MM(d) {
     return pad(d.month);
   },
-  MMM(d, l) {
-    return l.monthNamesShort[d.month - 1];
+  MMM(d) {
+    const dtf = new Intl.DateTimeFormat(d.locale, {
+      month: 'short',
+      timezone: 'UTC',
+      calendar: d.calendar,
+    });
+    return dtf.formatToParts(d.date).find(p => p.type === 'month').value;
   },
-  MMMM(d, l) {
-    return l.monthNames[d.month - 1];
+  MMMM(d) {
+    const dtf = new Intl.DateTimeFormat(d.locale, {
+      month: 'long',
+      timezone: 'UTC',
+      calendar: d.calendar,
+    });
+    return dtf.formatToParts(d.date).find(p => p.type === 'month').value;
   },
   YY(d) {
     return String(d.year).substr(2);
