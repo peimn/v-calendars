@@ -102,11 +102,12 @@ locales.no = locales.nb;
 locales.zh = locales['zh-CN'];
 
 // Remap from abbr. to intuitive property names
-toPairs(locales).forEach(([id, { dow, L }]) => {
+toPairs(locales).forEach(([id, { dow, L, calendar }]) => {
   locales[id] = {
     id,
     firstDayOfWeek: dow,
     masks: { L },
+    calendar,
   };
 });
 

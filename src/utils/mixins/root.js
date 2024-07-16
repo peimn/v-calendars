@@ -14,6 +14,7 @@ export const rootMixin = {
     masks: Object,
     locale: [String, Object],
     timezone: String,
+    calendar: String,
     minDate: null,
     maxDate: null,
     minDateExact: null,
@@ -48,6 +49,7 @@ export const rootMixin = {
             id: detID,
             firstDayOfWeek: this.firstDayOfWeek,
             masks: this.masks,
+            calendar: this.calendar ?? intLocale?.calendar,
           };
       // Return new locale
       return new Locale(config, {
