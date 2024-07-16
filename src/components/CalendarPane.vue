@@ -234,9 +234,17 @@ export default {
   padding: 10px 18px 0 18px;
   &.align-left {
     justify-content: flex-start;
+
+    [dir='rtl'] & {
+      justify-content: flex-end;
+    }
   }
   &.align-right {
     justify-content: flex-end;
+
+    [dir='rtl'] & {
+      justify-content: flex-start;
+    }
   }
 }
 

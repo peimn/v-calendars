@@ -912,9 +912,17 @@ export default {
   pointer-events: none;
   &.title-left {
     justify-content: flex-end;
+
+    [dir='rtl'] & {
+      justify-content: flex-start;
+    }
   }
   &.title-right {
     justify-content: flex-start;
+
+    [dir='rtl'] & {
+      justify-content: flex-end;
+    }
   }
 }
 
