@@ -6,6 +6,8 @@ import addDays from 'date-fns/addDays';
 import {
   CalendarDate,
   createCalendar,
+  endOfYear,
+  getDayOfWeek,
   getLocalTimeZone,
   getWeeksInMonth,
   isToday,
@@ -837,6 +839,27 @@ export default class Locale {
       const days = this.createCalendar.getDaysInMonth(intlDate);
       const weekStartsOn = this.firstDayOfWeek - 1;
       let weeks = getWeeksInMonth(intlDate, this.id);
+      let addToWeeks = 0;
+      let addToAllWeeks = 0;
+      if (['indian', 'ethiopic', 'buddhist', 'islamic-umalqura'].includes(this.calendar)) {
+        // calculate the number of weeks in indian, ethiopic, umalqura and buddhist calendars
+        const prevMonthDaysToShow =
+          firstWeekday +
+          (firstWeekday < this.firstDayOfWeek ? daysInWeek : 0) -
+          this.firstDayOfWeek;
+        weeks = Math.ceil((prevMonthDaysToShow + days) / 7);
+        if (this.calendar === 'islamic-umalqura' && prevMonthDaysToShow === 0) {
+          addToWeeks = 1;
+        }
+
+        if (['ethiopic', 'indian'].includes(this.calendar) && getDayOfWeek(endOfYear(intlDate.subtract({ years: 1 })), this.id) === 6) {
+          addToAllWeeks = 1;
+        }
+
+        if (['ethiopic', 'indian'].includes(this.calendar) && prevMonthDaysToShow === 6) {
+          addToWeeks = -1;
+        }
+      }
       const weeknumbers = [];
       const isoWeeknumbers = [];
       for (let i = 0; i < weeks; i++) {
