@@ -892,7 +892,7 @@ export default class Locale {
     return this.getMonthComps(month, year);
   }
 
-  // Day/month/year components for previous month
+  // Day/month/year components for the previous month
   getPrevMonthComps(month, year) {
     const intlDate = new CalendarDate(this.createCalendar, year, month, 1);
     if (month === 1) return this.getMonthComps(this.createCalendar.getMonthsInYear(intlDate), year - 1);

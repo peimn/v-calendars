@@ -779,28 +779,28 @@ export default {
     },
     handleDayKeydown(day) {
       const { dateFromTime, event } = day;
-      // Set to noon to offset any daylight savings time offset
+      // Set time at noon to offset any daylight savings time offset
       const date = dateFromTime(12);
       let newDate = null;
       const reverse = this.$locale.direction === 'rtl';
       switch (event.key) {
         case 'ArrowLeft': {
-          // Move to previous day
+          // Move to the previous day
           newDate = addDays(date, reverse ? 1 : -1);
           break;
         }
         case 'ArrowRight': {
-          // Move to next day
+          // Move to the next day
           newDate = addDays(date, reverse ? -1 : 1);
           break;
         }
         case 'ArrowUp': {
-          // Move to previous week
+          // Move to the previous week
           newDate = addDays(date, -7);
           break;
         }
         case 'ArrowDown': {
-          // Move to next week
+          // Move to the next week
           newDate = addDays(date, 7);
           break;
         }
@@ -819,7 +819,7 @@ export default {
             // Move to previous year w/ Alt/Option key
             newDate = addYears(date, reverse ? 1 : -1);
           } else {
-            // Move to previous month
+            // Move to the previous month
             newDate = addMonths(date, reverse ? 1 : -1);
           }
           break;

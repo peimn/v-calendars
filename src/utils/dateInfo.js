@@ -81,7 +81,7 @@ export default class DateInfo {
         .filter(o => o);
       if (or.length) this.on = { ...this.on, or };
     }
-    // Assign flag if date is complex
+    // Assign a flag if date is complex
     this.isComplex = !!this.on;
   }
 

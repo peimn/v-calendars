@@ -1,4 +1,4 @@
-// Vue won't get included in bundle as it is externalized
+// Vue won't get included in the bundle as it is externalized
 // https://cli.vuejs.org/guide/build-targets.html#library
 import Vue from 'vue';
 import buildMediaQuery from './buildMediaQuery';

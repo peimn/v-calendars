@@ -92,7 +92,7 @@ export default {
     const { daysInWeek } = this.locale;
     this.page.days.forEach((day, i) => {
       const mod = i % daysInWeek;
-      // Insert weeknumber cell on left side if needed
+      // Insert week number cell on the left side if needed
       if (
         (showWeeknumbersLeft && mod === 0) ||
         (showWeeknumbersRight && mod === daysInWeek)
@@ -113,7 +113,7 @@ export default {
           refInFor: true,
         }),
       );
-      // Insert weeknumber cell on right side if needed
+      // Insert week number cell on the right side if needed
       if (showWeeknumbersRight && mod === daysInWeek - 1) {
         dayCells.push(getWeeknumberCell(day[this.weeknumberKey]));
       }
