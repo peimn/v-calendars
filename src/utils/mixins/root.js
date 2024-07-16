@@ -36,10 +36,16 @@ export const rootMixin = {
       // Return the locale prop if it is an instance of the Locale class
       if (this.locale instanceof Locale) return this.locale;
       // Build up a base config from component props
+      let intLocale = null;
+      let detID;
+      if (this.locale) {
+        intLocale = new Intl.Locale(isObject(this.locale) ? this.locale.id : this.locale);
+        detID = intLocale.region ? `${intLocale.language}-${intLocale.region}` : intLocale.language;
+      }
       const config = isObject(this.locale)
         ? this.locale
         : {
-            id: this.locale,
+            id: detID,
             firstDayOfWeek: this.firstDayOfWeek,
             masks: this.masks,
           };

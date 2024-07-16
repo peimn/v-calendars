@@ -293,7 +293,7 @@ parseFlags.ZZZZ = parseFlags.ZZZ = parseFlags.ZZ = parseFlags.Z;
 
 export function resolveConfig(config, locales) {
   // Get the detected locale string
-  const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
+  const detLocale = new Intl.DateTimeFormat(config?.id).resolvedOptions().locale;
   // Resolve the locale id
   let id;
   if (isString(config)) {
