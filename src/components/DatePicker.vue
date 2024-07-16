@@ -1,4 +1,5 @@
 <script>
+import { getLocalTimeZone, ZonedDateTime } from '@internationalized/date';
 import Calendar from './Calendar';
 import Popover from './Popover';
 import TimePicker from './TimePicker';
@@ -352,6 +353,7 @@ export default {
       config: this.modelConfig_,
       formatInput: true,
       hidePopover: false,
+      created: true,
     });
     this.refreshDateParts();
   },
@@ -501,9 +503,88 @@ export default {
         });
       };
     },
+    createRegexPattern(format) {
+      const patterns = {
+        YYYY: '(?<year>\\d{4})',
+        YY: '(?<year_short>\\d{2})',
+        MM: '(?<month>\\d{1,2})',
+        DD: '(?<day>\\d{1,2})',
+        hh: '(?<hour>\\d{1,2})',
+        h: '(?<hour>\\d{1,2})',
+        HH: '(?<hour>\\d{1,2})',
+        H: '(?<hour>\\d{1,2})',
+        mm: '(?<minute>\\d{1,2})',
+        m: '(?<minute>\\d{1,2})',
+        ss: '(?<second>\\d{1,2})',
+        s: '(?<second>\\d{1,2})',
+        a: '(?<ampm>(?:am|pm))',
+        A: '(?<AMPM>(?:AM|PM))',
+      };
+
+      let regexPattern = format.replace(/YYYY|YY|MM|DD|hh|h|HH|H|mm|m|ss|s|a|A/g, match => patterns[match]);
+
+      // Add start and end anchors
+      regexPattern = `^${regexPattern}$`;
+
+      return new RegExp(regexPattern);
+    },
+    parseDateTime(dateTimeString, format) {
+      let result = {};
+      if (format || format !== 'iso') {
+        const regex = this.createRegexPattern(format);
+        const match = dateTimeString.match(regex);
+        if (!match) {
+          throw new Error('Date-time string does not match the format.');
+        }
+        result = match.groups;
+      }
+      // Determine an hour type based on the format
+      let hourType;
+      if (format.includes('hh') || format.includes('h')) {
+        hourType = 12;
+      } else if (format.includes('HH') || format.includes('H')) {
+        hourType = 24;
+      }
+
+      return { ...result, hourType };
+    },
+    formatDateByMask(date, format) {
+      if (!date) return null;
+      const tokens = {
+        YYYY: date.getFullYear(),
+        YY: String(date.getFullYear()).slice(-2),
+        MM: String(date.getMonth() + 1).padStart(2, '0'),
+        M: date.getMonth() + 1,
+        DD: String(date.getDate()).padStart(2, '0'),
+        D: date.getDate(),
+        hh: String(date.getHours() % 12 || 12).padStart(2, '0'),
+        h: date.getHours() % 12 || 12,
+        HH: String(date.getHours()).padStart(2, '0'),
+        H: date.getHours(),
+        mm: String(date.getMinutes()).padStart(2, '0'),
+        m: date.getMinutes(),
+        ss: String(date.getSeconds()).padStart(2, '0'),
+        s: date.getSeconds(),
+        a: date.getHours() < 12 ? 'am' : 'pm',
+        A: date.getHours() < 12 ? 'AM' : 'PM'
+      };
+      if (format === 'iso' || !format) {
+        return date;
+      }
+      return format.replace(/YYYY|YY|MM|M|DD|D|hh|h|HH|H|mm|m|ss|s|a|A/g, match => tokens[match]);
+    },
+    convertTime12to24(h, ampm) {
+      if (parseInt(h, 10) === 12) {
+        h = 0;
+      }
+      if (ampm.toUpperCase() === 'PM') {
+        h = parseInt(h, 10) + 12;
+      }
+      return h;
+    },
     onInputUpdate(inputValue, isStart, opts) {
       this.inputValues.splice(isStart ? 0 : 1, 1, inputValue);
-      const value = this.isRange
+      let value = this.isRange
         ? {
             start: this.inputValues[0],
             end: this.inputValues[1] || this.inputValues[0],
@@ -513,6 +594,68 @@ export default {
         type: 'string',
         mask: this.inputMask,
       };
+      // only process non-gregorian date
+      if (this.$locale.calendar !== 'gregory') {
+        let dateMask = typeof this.inputMask === 'string' ? this.inputMask : this.inputMask[this.$locale.masks.L ? 0 : this.inputMaskPatch];
+        if (dateMask.includes('L')) {
+          dateMask = dateMask.replace('L', this.$locale.masks.L);
+        }
+        let parsedDateTime = {};
+        const timeZone = this.timezone === null || this.timezone?.trim() === '' ? getLocalTimeZone() : this.timezone;
+        if (this.isRange) {
+          parsedDateTime = {
+            start: this.parseDateTime(value.start, dateMask),
+            end: this.parseDateTime(value.end, dateMask),
+          };
+          // process start
+          let ampm = parsedDateTime.start.ampm ?? parsedDateTime.start.AMPM;
+          let hour = parsedDateTime.start.hourType === 12 ? this.convertTime12to24(parsedDateTime.start.hour, ampm) : parsedDateTime.start.hour;
+          let intlDate = new ZonedDateTime(
+            this.$locale.createCalendar,
+            '',
+            parsedDateTime.start.year,
+            parsedDateTime.start.month,
+            parsedDateTime.start.day,
+            timeZone,
+            0,
+          );
+          intlDate = intlDate.set({
+            hour, minute: parsedDateTime.start.minute, second: parsedDateTime.start.second ?? 0,
+          });
+          value.start = this.formatDateByMask(intlDate.toDate(), dateMask);
+          // process end
+          ampm = parsedDateTime.end.ampm ?? parsedDateTime.end.AMPM;
+          hour = parsedDateTime.end.hourType === 12 ? this.convertTime12to24(parsedDateTime.end.hour, ampm) : parsedDateTime.end.hour;
+          intlDate = intlDate.set({
+            year: parsedDateTime.end.year,
+            month: parsedDateTime.end.month,
+            day: parsedDateTime.end.day,
+            hour,
+            minute: parsedDateTime.end.minute,
+            second: parsedDateTime.end.second ?? 0,
+            hourType: parsedDateTime.hourType,
+          });
+          value.end = this.formatDateByMask(intlDate.toDate(), dateMask);
+        } else {
+          // process single date
+          parsedDateTime = this.parseDateTime(value, dateMask);
+          const ampm = parsedDateTime.ampm ?? parsedDateTime.AMPM;
+          const hour = parsedDateTime.hourType === 12 ? this.convertTime12to24(parsedDateTime.hour, ampm) : parsedDateTime.hour;
+          let intlDate = new ZonedDateTime(
+            this.$locale.createCalendar,
+            '',
+            parsedDateTime.year,
+            parsedDateTime.month,
+            parsedDateTime.day,
+            timeZone,
+            0,
+          );
+          intlDate = intlDate.set({
+            hour, minute: parsedDateTime.minute, second: parsedDateTime.second ?? 0,
+          });
+          value = this.formatDateByMask(intlDate.toDate(), dateMask);
+        }
+      }
       this.updateValue(value, {
         ...opts,
         config,
@@ -567,6 +710,7 @@ export default {
         hidePopover = false,
         isDragging = this.isDragging,
         rangePriority = RANGE_PRIORITY.BOTH,
+        created = false,
       } = {},
     ) {
       // 1. Normalization
@@ -611,10 +755,23 @@ export default {
         // Clear drag value if needed
         if (!isDragging) this.dragValue = null;
         // Denormalization
-        const denormalizedValue = this.denormalizeValue(normalizedValue);
+        let denormalizedValue = this.denormalizeValue(normalizedValue);
         // Notification
         const event = this.isDragging ? 'drag' : 'input';
         this.watchValue = false;
+        let dateMask = this.modelConfig_ ? this.modelConfig_[0].mask : this.inputMask[this.$locale.masks.L ? 0 : this.inputMaskPatch];
+        if (dateMask.includes('L')) {
+          dateMask = dateMask.replace('L', this.$locale.masks.L);
+        }
+        // process single date
+        if (this.$locale.calendar !== 'gregory') {
+          if (!this.isRange) {
+            denormalizedValue = this.formatDateByMask(normalizedValue, dateMask);
+          } else {
+            denormalizedValue.start = this.formatDateByMask(normalizedValue.start, dateMask);
+            denormalizedValue.end = this.formatDateByMask(normalizedValue.end, dateMask);
+          }
+        }
         this.$emit(event, denormalizedValue);
         this.$nextTick(() => (this.watchValue = true));
       }
@@ -623,7 +780,7 @@ export default {
       if (hidePopover) this.hidePopover();
 
       // 6. Format inputs if needed
-      if (formatInput) this.formatInput();
+      if (formatInput) this.formatInput(created);
     },
     hasValue(value) {
       if (this.isRange) {
