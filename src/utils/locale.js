@@ -12,6 +12,8 @@ import {
   getWeeksInMonth,
   isToday,
   isWeekend,
+  startOfWeek,
+  startOfYear,
   toCalendar,
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
@@ -862,10 +864,21 @@ export default class Locale {
       }
       const weeknumbers = [];
       const isoWeeknumbers = [];
+      const localeWeeknumbers = [];
+      const yearStart = startOfYear(intlDate);
+      const yearWeekStart = startOfWeek(yearStart, this.id).toDate(getLocalTimeZone());
       for (let i = 0; i < weeks; i++) {
         const date = addDays(firstDayOfMonth, i * 7);
         weeknumbers.push(getWeek(date, { weekStartsOn }));
         isoWeeknumbers.push(getISOWeek(date));
+        // get locale week number
+        const diff = startOfWeek(intlDate, this.id).toDate(getLocalTimeZone()) - yearWeekStart;
+        // Round the number of weeks to the nearest integer because the number of
+        // milliseconds in a week is not constant (e.g., it's different in the week of
+        // the daylight-saving time clock shift).
+        const millisecondsInWeek = 604800000;
+        localeWeeknumbers.push(Math.round(diff / millisecondsInWeek) + 1 + addToWeeks + addToAllWeeks);
+        intlDate = intlDate.add({ weeks: 1 });
       }
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
@@ -876,6 +889,7 @@ export default class Locale {
         year,
         weeknumbers,
         isoWeeknumbers,
+        localeWeeknumbers,
       };
       this.monthData[key] = comps;
     }
@@ -909,7 +923,7 @@ export default class Locale {
   // Builds day components for a given page
   getCalendarDays({ weeks, monthComps, prevMonthComps, nextMonthComps }) {
     const days = [];
-    const { firstDayOfWeek, firstWeekday, isoWeeknumbers, weeknumbers } =
+    const { firstDayOfWeek, firstWeekday, isoWeeknumbers, weeknumbers, localeWeeknumbers } =
       monthComps;
     const prevMonthDaysToShow =
       firstWeekday +
@@ -990,6 +1004,7 @@ export default class Locale {
         const weekdayPositionFromEnd = daysInWeek - i;
         const weeknumber = weeknumbers[w - 1];
         const isoWeeknumber = isoWeeknumbers[w - 1];
+        const localeWeeknumber = localeWeeknumbers[w - 1];
         const isItToday = isToday(intlDate, getLocalTimeZone());
         const isFirstDay = thisMonth && day === 1;
         const isLastDay = thisMonth && day === monthComps.days;
@@ -1012,6 +1027,7 @@ export default class Locale {
           weekFromEnd,
           weeknumber,
           isoWeeknumber,
+          localeWeeknumber,
           month,
           year,
           dateFromTime,

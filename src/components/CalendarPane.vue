@@ -157,13 +157,16 @@ export default {
     navVisibility: String,
     showWeeknumbers: [Boolean, String],
     showIsoWeeknumbers: [Boolean, String],
+    showLocaleWeeknumbers: [Boolean, String],
   },
   computed: {
     weeknumberKey() {
-      return this.showWeeknumbers ? 'weeknumber' : 'isoWeeknumber';
+      if (this.showLocaleWeeknumbers) return 'localeWeeknumber';
+      if (this.showWeeknumbers) return 'weeknumber';
+      return 'isoWeeknumber';
     },
     showWeeknumbers_() {
-      const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers;
+      const showWeeknumbers = this.showWeeknumbers || this.showIsoWeeknumbers || this.showLocaleWeeknumbers;
       if (showWeeknumbers == null) return '';
       if (isBoolean(showWeeknumbers)) {
         return showWeeknumbers ? 'left' : '';
