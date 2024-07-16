@@ -661,6 +661,8 @@ export default class Locale {
       month,
       year,
       date,
+      locale: this.id,
+      calendar: this.calendar,
       isValid: true,
     };
     parts.timezoneOffset = this.getTimezoneOffset(parts);
