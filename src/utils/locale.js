@@ -8,6 +8,7 @@ import {
   createCalendar,
   getLocalTimeZone,
   getWeeksInMonth,
+  isToday,
   toCalendar,
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
@@ -910,11 +911,6 @@ export default class Locale {
     let weekFromEnd = 1;
     let month = prevMonthComps.month;
     let year = prevMonthComps.year;
-    // Store todays comps
-    const today = new Date();
-    const todayDay = today.getDate();
-    const todayMonth = today.getMonth() + 1;
-    const todayYear = today.getFullYear();
     let intlDate = new CalendarDate(this.createCalendar, year, month, day);
     const dft = (y, m, d) => (hours, minutes, seconds, milliseconds) =>
       this.normalizeDate({
@@ -969,8 +965,7 @@ export default class Locale {
         const weekdayPositionFromEnd = daysInWeek - i;
         const weeknumber = weeknumbers[w - 1];
         const isoWeeknumber = isoWeeknumbers[w - 1];
-        const isToday =
-          day === todayDay && month === todayMonth && year === todayYear;
+        const isItToday = isToday(intlDate, getLocalTimeZone());
         const isFirstDay = thisMonth && day === 1;
         const isLastDay = thisMonth && day === monthComps.days;
         const onTop = w === 1;
@@ -997,7 +992,7 @@ export default class Locale {
           dateFromTime,
           date,
           range,
-          isToday,
+          isToday: isItToday,
           isFirstDay,
           isLastDay,
           inMonth: thisMonth,
@@ -1018,7 +1013,7 @@ export default class Locale {
             `week-${week}`,
             `week-from-end-${weekFromEnd}`,
             {
-              'is-today': isToday,
+              'is-today': isItToday,
               'is-first-day': isFirstDay,
               'is-last-day': isLastDay,
               'in-month': thisMonth,
