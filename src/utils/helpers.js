@@ -1,3 +1,4 @@
+import { CalendarDate, createCalendar } from '@internationalized/date';
 import { isArray, isObject, isFunction, isDate } from './_';
 
 export const pad = (val, len, char = '0') => {
@@ -53,21 +54,24 @@ export const pageIsEqualToPage = (aPage, bPage) => {
   return aPage.month === bPage.month && aPage.year === bPage.year;
 };
 
-export const addPages = ({ month, year }, count) => {
+export const addPages = ({ month, year, calendar }, count) => {
+  const createdCalendar = createCalendar(calendar);
+  const intlDate = new CalendarDate(createdCalendar, year, 1, 1);
   const incr = count > 0 ? 1 : -1;
   for (let i = 0; i < Math.abs(count); i++) {
     month += incr;
-    if (month > 12) {
+    if (month > createdCalendar.getMonthsInYear(intlDate)) {
       month = 1;
       year++;
     } else if (month < 1) {
-      month = 12;
+      month = createdCalendar.getMonthsInYear(intlDate);
       year--;
     }
   }
   return {
     month,
     year,
+    calendar,
   };
 };
 

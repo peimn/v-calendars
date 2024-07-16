@@ -865,13 +865,15 @@ export default class Locale {
 
   // Day/month/year components for previous month
   getPrevMonthComps(month, year) {
-    if (month === 1) return this.getMonthComps(12, year - 1);
+    const intlDate = new CalendarDate(this.createCalendar, year, month, 1);
+    if (month === 1) return this.getMonthComps(this.createCalendar.getMonthsInYear(intlDate), year - 1);
     return this.getMonthComps(month - 1, year);
   }
 
   // Day/month/year components for next month
   getNextMonthComps(month, year) {
-    if (month === 12) return this.getMonthComps(1, year + 1);
+    const intlDate = new CalendarDate(this.createCalendar, year, month, 1);
+    if (month === this.createCalendar.getMonthsInYear(intlDate)) return this.getMonthComps(1, year + 1);
     return this.getMonthComps(month + 1, year);
   }
 
