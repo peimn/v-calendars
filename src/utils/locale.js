@@ -4,6 +4,9 @@ import getISOWeek from 'date-fns/getISOWeek';
 import getWeek from 'date-fns/getWeek';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
+import {
+  createCalendar,
+} from '@internationalized/date';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
 import { pad, addPages, arrayHasItems } from './helpers';
@@ -343,6 +346,7 @@ export default class Locale {
     this.amPm = ['am', 'pm'];
     this.monthData = {};
     this.calendar = calendar;
+    this.createCalendar = createCalendar(calendar);
     // Bind methods
     this.getMonthComps = this.getMonthComps.bind(this);
     this.parse = this.parse.bind(this);
