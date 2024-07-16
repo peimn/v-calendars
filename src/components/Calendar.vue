@@ -568,7 +568,7 @@ export default {
       let page = this.fromPage || this.pageForDate(this.fromDate);
       if (!pageIsValid(page)) {
         // 2. Try the toPage prop
-        const toPage = this.toPage || this.pageForDate(this.toPage);
+        const toPage = this.toPage || this.pageForDate(this.toDate);
         if (pageIsValid(toPage)) {
           page = addPages(toPage, 1 - this.count);
         }
