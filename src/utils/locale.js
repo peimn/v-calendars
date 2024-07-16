@@ -752,6 +752,7 @@ export default class Locale {
     const dtf = new Intl.DateTimeFormat(this.id, {
       month: length,
       timezome: 'UTC',
+      calendar,
     });
     return this.getMonthDates().map(d => dtf.format(d));
   }
@@ -778,6 +779,7 @@ export default class Locale {
     const dtf = new Intl.DateTimeFormat(this.id, {
       weekday: length,
       timeZone: this.timezone,
+      calendar: this.calendar,
     });
     return this.getWeekdayDates(1).map(d => dtf.format(d));
   }
@@ -859,6 +861,7 @@ export default class Locale {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      calendar: this.calendar,
     });
     // Init counters with previous month's data
     let day = prevMonthComps.days - prevMonthDaysToShow + 1;
