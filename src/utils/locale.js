@@ -5,7 +5,10 @@ import getWeek from 'date-fns/getWeek';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
 import {
+  CalendarDate,
   createCalendar,
+  getLocalTimeZone,
+  toCalendar,
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
@@ -625,16 +628,18 @@ export default class Locale {
       const diff = normDate.getTime() - date.getTime();
       tzDate = new Date(date.getTime() + diff);
     }
+    const intlDate = new CalendarDate(tzDate.getFullYear(), tzDate.getMonth() + 1, tzDate.getDate());
+    const localeCalendarDate = toCalendar(intlDate, this.createCalendar);
     const milliseconds = tzDate.getMilliseconds();
     const seconds = tzDate.getSeconds();
     const minutes = tzDate.getMinutes();
     const hours = tzDate.getHours();
-    const month = tzDate.getMonth() + 1;
-    const year = tzDate.getFullYear();
+    const month = localeCalendarDate.month;
+    const year = localeCalendarDate.year;
     const comps = this.getMonthComps(month, year);
-    const day = tzDate.getDate();
+    const day = localeCalendarDate.day;
     const dayFromEnd = comps.days - day + 1;
-    const weekday = tzDate.getDay() + 1;
+    const weekday = intlDate.toDate(getLocalTimeZone()).getDay() + 1;
     const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
     const weekdayOrdinalFromEnd = Math.floor((comps.days - day) / 7 + 1);
     const week = Math.ceil(
