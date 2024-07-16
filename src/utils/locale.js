@@ -829,8 +829,8 @@ export default class Locale {
     const key = `${month}-${year}`;
     let comps = this.monthData[key];
     if (!comps) {
-      const firstDayOfMonth = new Date(year, month - 1, 1);
       let intlDate = new CalendarDate(this.createCalendar, year, month, 1);
+      const firstDayOfMonth = intlDate.toDate(getLocalTimeZone());
       const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = this.createCalendar.getDaysInMonth(intlDate);
       const weekStartsOn = this.firstDayOfWeek - 1;
