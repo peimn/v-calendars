@@ -81,12 +81,13 @@ export default {
       const click = () => this.move(isPrev ? -this.step_ : this.step_);
       const keydown = e => onSpaceOrEnter(e, click);
       const isDisabled = isPrev ? !this.canMovePrev : !this.canMoveNext;
+      const arrowClass = this.$locale.direction === 'ltr' ? ['left', 'right'] : ['right', 'left'];
       return h(
         'div',
         {
           class: [
             'vc-arrow',
-            `is-${isPrev ? 'left' : 'right'}`,
+            `is-${isPrev ? arrowClass[0] : arrowClass[1]}`,
             { 'is-disabled': isDisabled },
           ],
           attrs: {
@@ -103,7 +104,7 @@ export default {
             : this.safeScopedSlot('header-right-button', { click })) ||
             h(SvgIcon, {
               props: {
-                name: isPrev ? 'left-arrow' : 'right-arrow',
+                name: isPrev ? `${arrowClass[0]}-arrow` : `${arrowClass[1]}-arrow`,
               },
             }),
         ],
@@ -190,6 +191,7 @@ export default {
       'div',
       {
         attrs: {
+          'dir': this.$locale.direction,
           'data-helptext':
             'Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year',
         },
@@ -666,8 +668,9 @@ export default {
       if (transition === 'slide-v') {
         return movePrev ? 'slide-down' : 'slide-up';
       }
+      const moveDir = this.$locale.direction === 'ltr' ? ['right', 'left'] : ['left', 'right'];
       // Horizontal slide
-      return movePrev ? 'slide-right' : 'slide-left';
+      return movePrev ? `slide-${moveDir[0]}` : `slide-${moveDir[1]}`;
     },
     getPageForAttributes() {
       let page = null;
@@ -779,15 +782,16 @@ export default {
       // Set to noon to offset any daylight savings time offset
       const date = dateFromTime(12);
       let newDate = null;
+      const reverse = this.$locale.direction === 'rtl';
       switch (event.key) {
         case 'ArrowLeft': {
           // Move to previous day
-          newDate = addDays(date, -1);
+          newDate = addDays(date, reverse ? 1 : -1);
           break;
         }
         case 'ArrowRight': {
           // Move to next day
-          newDate = addDays(date, 1);
+          newDate = addDays(date, reverse ? -1 : 1);
           break;
         }
         case 'ArrowUp': {
@@ -802,31 +806,31 @@ export default {
         }
         case 'Home': {
           // Move to first weekday position
-          newDate = addDays(date, -day.weekdayPosition + 1);
+          newDate = addDays(date, reverse ? day.weekdayPositionFromEnd : -day.weekdayPosition + 1);
           break;
         }
         case 'End': {
           // Move to last weekday position
-          newDate = addDays(date, day.weekdayPositionFromEnd);
+          newDate = addDays(date, reverse ? -day.weekdayPosition + 1 : day.weekdayPositionFromEnd);
           break;
         }
         case 'PageUp': {
           if (event.altKey) {
             // Move to previous year w/ Alt/Option key
-            newDate = addYears(date, -1);
+            newDate = addYears(date, reverse ? 1 : -1);
           } else {
             // Move to previous month
-            newDate = addMonths(date, -1);
+            newDate = addMonths(date, reverse ? 1 : -1);
           }
           break;
         }
         case 'PageDown': {
           if (event.altKey) {
             // Move to next year w/ Alt/Option key
-            newDate = addYears(date, 1);
+            newDate = addYears(date, reverse ? -1 : 1);
           } else {
             // Move to next month
-            newDate = addMonths(date, 1);
+            newDate = addMonths(date, reverse ? -1 : 1);
           }
           break;
         }

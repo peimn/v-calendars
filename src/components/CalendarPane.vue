@@ -42,8 +42,8 @@ export default {
       ),
     );
 
-    const showWeeknumbersLeft = this.showWeeknumbers_.startsWith('left');
-    const showWeeknumbersRight = this.showWeeknumbers_.startsWith('right');
+    const showWeeknumbersLeft = this.locale.direction === 'ltr' ? this.showWeeknumbers_.startsWith('left') : this.showWeeknumbers_.startsWith('right');
+    const showWeeknumbersRight = this.locale.direction === 'ltr' ? this.showWeeknumbers_.startsWith('right') : this.showWeeknumbers_.startsWith('left');
     if (showWeeknumbersLeft) {
       weekdayCells.unshift(
         h('div', {
@@ -125,8 +125,8 @@ export default {
         class: {
           'vc-weeks': true,
           'vc-show-weeknumbers': this.showWeeknumbers_,
-          'is-left': showWeeknumbersLeft,
-          'is-right': showWeeknumbersRight,
+          [`is-${this.locale.direction === 'ltr' ? 'left' : 'right'}`]: showWeeknumbersLeft,
+          [`is-${this.locale.direction === 'ltr' ? 'right' : 'left'}`]: showWeeknumbersRight,
         },
       },
       [weekdayCells, dayCells],

@@ -6,14 +6,14 @@
       <!--Move prev button-->
       <span
         role="button"
-        class="vc-nav-arrow is-left"
-        :class="{ 'is-disabled': !prevItemsEnabled }"
+        class="vc-nav-arrow"
+        :class="{ 'is-disabled': !prevItemsEnabled, 'is-left': locale.direction === 'ltr', 'is-right': locale.direction === 'rtl' }"
         :tabindex="prevItemsEnabled ? 0 : undefined"
         @click="movePrev"
         @keydown="e => onSpaceOrEnter(e, movePrev)"
       >
         <slot name="nav-left-button">
-          <svg-icon name="left-arrow" width="20px" height="24px" />
+          <svg-icon :name="`${locale.direction === 'ltr' ? 'left' : 'right'}-arrow`" width="20px" height="24px" />
         </slot>
       </span>
       <!--Mode switch button-->
@@ -30,14 +30,14 @@
       <!--Move next button-->
       <span
         role="button"
-        class="vc-nav-arrow is-right"
-        :class="{ 'is-disabled': !nextItemsEnabled }"
+        class="vc-nav-arrow"
+        :class="{ 'is-disabled': !nextItemsEnabled, 'is-right': locale.direction === 'ltr', 'is-left': locale.direction === 'rtl' }"
         :tabindex="nextItemsEnabled ? 0 : undefined"
         @click="moveNext"
         @keydown="e => onSpaceOrEnter(e, moveNext)"
       >
         <slot name="nav-right-button">
-          <svg-icon name="right-arrow" width="20px" height="24px" />
+          <svg-icon :name="`${locale.direction === 'ltr' ? 'right' : 'left'}-arrow`" width="20px" height="24px" />
         </slot>
       </span>
     </div>

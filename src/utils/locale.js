@@ -1063,8 +1063,8 @@ export default class Locale {
               'in-next-month': nextMonth,
               'on-top': onTop,
               'on-bottom': onBottom,
-              'on-left': onLeft,
-              'on-right': onRight,
+              [`on-${this.direction === 'ltr' ? 'left' : 'right'}`]: onLeft,
+              [`on-${this.direction === 'ltr' ? 'right' : 'left'}`]: onRight,
             },
           ],
         });
