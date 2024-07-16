@@ -15,6 +15,7 @@ export const rootMixin = {
     locale: [String, Object],
     timezone: String,
     calendar: String,
+    direction: String,
     minDate: null,
     maxDate: null,
     minDateExact: null,
@@ -50,6 +51,7 @@ export const rootMixin = {
             firstDayOfWeek: this.firstDayOfWeek,
             masks: this.masks,
             calendar: this.calendar ?? intLocale?.calendar,
+            direction: this.direction ?? intLocale?.textInfo?.direction ?? 'ltr',
           };
       // Return new locale
       return new Locale(config, {
