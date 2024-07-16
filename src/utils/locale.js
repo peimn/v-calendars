@@ -18,18 +18,8 @@ import {
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
 import defaultLocales from './defaults/locales';
-import { pad, addPages, arrayHasItems } from './helpers';
-import {
-  isDate,
-  isNumber,
-  isString,
-  isObject,
-  isArray,
-  has,
-  defaultsDeep,
-  clamp,
-  pick,
-} from './_';
+import { addPages, arrayHasItems, pad } from './helpers';
+import { clamp, defaultsDeep, has, isArray, isDate, isNumber, isObject, isString, pick } from './_';
 
 export const PATCH = {
   DATE_TIME: 1,
