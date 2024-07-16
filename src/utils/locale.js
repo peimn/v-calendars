@@ -57,7 +57,6 @@ const monthUpdate = arrName => (d, v, l) => {
 const maskMacros = ['L', 'iso'];
 
 const daysInWeek = 7;
-const daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const hourOptions = [
   { value: 0, label: '00' },
   { value: 1, label: '01' },
@@ -830,11 +829,10 @@ export default class Locale {
     const key = `${month}-${year}`;
     let comps = this.monthData[key];
     if (!comps) {
-      const inLeapYear =
-        (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
       const firstDayOfMonth = new Date(year, month - 1, 1);
+      let intlDate = new CalendarDate(this.createCalendar, year, month, 1);
       const firstWeekday = firstDayOfMonth.getDay() + 1;
-      const days = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+      const days = this.createCalendar.getDaysInMonth(intlDate);
       const weekStartsOn = this.firstDayOfWeek - 1;
       const weeks = getWeeksInMonth(firstDayOfMonth, {
         weekStartsOn,
@@ -848,7 +846,6 @@ export default class Locale {
       }
       comps = {
         firstDayOfWeek: this.firstDayOfWeek,
-        inLeapYear,
         firstWeekday,
         days,
         weeks,
