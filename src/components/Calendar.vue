@@ -2,6 +2,7 @@
 import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 import Popover from './Popover';
 import PopoverRow from './PopoverRow';
 import CalendarNav from './CalendarNav';
@@ -666,7 +667,8 @@ export default {
       const key = `${year.toString()}-${month.toString()}`;
       let page = this.pages.find(p => p.key === key);
       if (!page || ignoreCache) {
-        const date = new Date(year, month - 1, 15);
+        const intlDate = new CalendarDate(this.$locale.createCalendar, year, month, 1);
+        const date = intlDate.toDate(getLocalTimeZone());
         const monthComps = this.$locale.getMonthComps(month, year);
         const prevMonthComps = this.$locale.getPrevMonthComps(month, year);
         const nextMonthComps = this.$locale.getNextMonthComps(month, year);
