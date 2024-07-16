@@ -964,6 +964,7 @@ export default class Locale {
         const date = range.start;
         const localeID = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const id = `${pad(intlDate.toDate(getLocalTimeZone()).getFullYear(), 4)}-${pad(intlDate.toDate(getLocalTimeZone()).getMonth() + 1, 2)}-${pad(intlDate.toDate(getLocalTimeZone()).getDate(), 2)}`;
+        const dayID = localeID !== id ? `${id} id-${localeID}` : id;
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const weeknumber = weeknumbers[w - 1];
@@ -1007,7 +1008,7 @@ export default class Locale {
           onLeft,
           onRight,
           classes: [
-            `id-${id}`,
+            `id-${dayID}`,
             `day-${day}`,
             `day-from-end-${dayFromEnd}`,
             `weekday-${weekday}`,
