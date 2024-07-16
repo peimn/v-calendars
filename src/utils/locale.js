@@ -305,8 +305,21 @@ export function resolveConfig(config, locales) {
   const localeKeys = Object.keys(locales);
   const validKey = k => localeKeys.find(lk => lk.toLowerCase() === k);
   id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
+  // get calendar
+  let calendar = new Intl.DateTimeFormat(id).resolvedOptions().calendar;
+  // supported calendars by @internationalized/date
+  const supportedCalendars = ['gregory', 'buddhist', 'ethiopic', 'ethioaa', 'coptic', 'hebrew', 'indian',
+    'islamic-civil', 'islamic-tbla', 'islamic-umalqura', 'japanese', 'persian', 'roc'];
+  if (locales[id]?.calendar && supportedCalendars.includes(locales[id]?.calendar)) {
+    calendar = locales[id]?.calendar;
+  }
+  if (config?.calendar && !supportedCalendars.includes(config?.calendar)) {
+    delete config.calendar;
+  } else if (config?.calendar && supportedCalendars.includes(config?.calendar)) {
+    calendar = config?.calendar;
+  }
   // Add fallback and spread default locale to prevent repetitive update loops
-  const defLocale = { ...locales['en-IE'], ...locales[id], id };
+  const defLocale = { ...locales['en-IE'], ...locales[id], id, calendar };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
   // Return resolved config
@@ -315,7 +328,7 @@ export function resolveConfig(config, locales) {
 
 export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks, calendar } = resolveConfig(config, locales);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
@@ -329,6 +342,7 @@ export default class Locale {
     this.monthNamesShort = this.getMonthNames('short');
     this.amPm = ['am', 'pm'];
     this.monthData = {};
+    this.calendar = calendar;
     // Bind methods
     this.getMonthComps = this.getMonthComps.bind(this);
     this.parse = this.parse.bind(this);
