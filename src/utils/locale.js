@@ -9,6 +9,7 @@ import {
   getLocalTimeZone,
   getWeeksInMonth,
   isToday,
+  isWeekend,
   toCalendar,
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
@@ -961,6 +962,7 @@ export default class Locale {
         const localeID = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
         const id = `${pad(intlDate.toDate(getLocalTimeZone()).getFullYear(), 4)}-${pad(intlDate.toDate(getLocalTimeZone()).getMonth() + 1, 2)}-${pad(intlDate.toDate(getLocalTimeZone()).getDate(), 2)}`;
         const dayID = localeID !== id ? `${id} id-${localeID}` : id;
+        const weekend = isWeekend(intlDate, this.id);
         const weekdayPosition = i;
         const weekdayPositionFromEnd = daysInWeek - i;
         const weeknumber = weeknumbers[w - 1];
@@ -1013,6 +1015,7 @@ export default class Locale {
             `week-${week}`,
             `week-from-end-${weekFromEnd}`,
             {
+              'is-weekend': weekend,
               'is-today': isItToday,
               'is-first-day': isFirstDay,
               'is-last-day': isLastDay,

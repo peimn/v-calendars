@@ -157,13 +157,12 @@ export default {
     height: var(--day-height);
     min-width: var(--day-width);
     background-color: white;
-    &.weekday-1,
-    &.weekday-7 {
+    &.is-weekend {
       background-color: #eff8ff;
     }
     &:not(.on-bottom) {
       border-bottom: var(--day-border);
-      &.weekday-1 {
+      &.is-weekend {
         border-bottom: var(--day-border-highlight);
       }
     }
