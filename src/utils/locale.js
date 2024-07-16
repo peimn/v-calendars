@@ -671,6 +671,13 @@ export default class Locale {
 
   getDateFromParts(parts) {
     if (!parts) return null;
+    if (this.createCalendar && parts?.calendar) {
+      const intlDate = new CalendarDate(this.createCalendar, parts.year, parts.month, parts.day);
+      const date = intlDate.toDate(getLocalTimeZone());
+      parts.year = date.getFullYear();
+      parts.month = date.getMonth() + 1;
+      parts.day = date.getDate();
+    }
     const d = new Date();
     const {
       year = d.getFullYear(),
