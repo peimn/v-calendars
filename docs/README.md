@@ -11,12 +11,12 @@ pageClass: 'homepage'
 
 <img src="hero.png" alt="Banner image" width="200" style="margin:auto">
 
-# V-Calendar
+# V-Calendars
 
 ### An elegant calendar and datepicker plugin for Vuejs.
 
 ```bash
-npm i v-calendar
+npm i v-calendars
 ```
 
 <homepage-simple-calendar />

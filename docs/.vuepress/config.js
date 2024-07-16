@@ -3,7 +3,7 @@ const postcssPresetEnv = require('postcss-preset-env');
 const tailwindcss = require('tailwindcss');
 
 module.exports = {
-  title: 'V-Calendar',
+  title: 'V-Calendars',
   description: 'An elegant calendar and datepicker plugin for Vuejs.',
   plugins: [],
   head: [['link', { rel: 'icon', href: 'favicon.png' }]],
@@ -132,7 +132,7 @@ module.exports = {
       ],
     },
     // Assumes GitHub. Can also be a full GitLab url.
-    repo: 'nathanreyes/v-calendar',
+    repo: 'peimn/v-calendars',
     // if your docs are not at the root of the repo
     docsDir: 'docs',
     // optional, defaults to master
