@@ -196,7 +196,7 @@ export default {
   }
 }
 .vc-date-time {
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 .vc-disabled {
   pointer-events: none;
@@ -213,7 +213,10 @@ export default {
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   text-transform: uppercase;
-  padding: 0 0 4px 4px;
+  padding-top: 0;
+  padding-bottom: 4px;
+  padding-inline-start: 4px;
+  padding-inline-end: 0;
   margin-top: -4px;
   & .vc-weekday {
     color: var(--gray-700);
@@ -221,15 +224,15 @@ export default {
   }
   & .vc-month {
     color: var(--accent-600);
-    margin-left: 8px;
+    margin-inline-start: 8px;
   }
   & .vc-day {
     color: var(--accent-600);
-    margin-left: 4px;
+    margin-inline-start: 4px;
   }
   & .vc-year {
     color: var(--gray-500);
-    margin-left: 8px;
+    margin-inline-start: 8px;
   }
 }
 .vc-time {
@@ -240,7 +243,7 @@ export default {
   display: flex;
   align-items: center;
   background: var(--gray-200);
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 4px;
   border-radius: var(--rounded);
   height: 30px;
