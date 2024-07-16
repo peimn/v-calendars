@@ -2,12 +2,12 @@
 import toDate from 'date-fns-tz/toDate';
 import getISOWeek from 'date-fns/getISOWeek';
 import getWeek from 'date-fns/getWeek';
-import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import addDays from 'date-fns/addDays';
 import {
   CalendarDate,
   createCalendar,
   getLocalTimeZone,
+  getWeeksInMonth,
   toCalendar,
 } from '@internationalized/date';
 import DateInfo from './dateInfo';
@@ -834,9 +834,7 @@ export default class Locale {
       const firstWeekday = firstDayOfMonth.getDay() + 1;
       const days = this.createCalendar.getDaysInMonth(intlDate);
       const weekStartsOn = this.firstDayOfWeek - 1;
-      const weeks = getWeeksInMonth(firstDayOfMonth, {
-        weekStartsOn,
-      });
+      let weeks = getWeeksInMonth(intlDate, this.id);
       const weeknumbers = [];
       const isoWeeknumbers = [];
       for (let i = 0; i < weeks; i++) {
