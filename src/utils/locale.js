@@ -725,6 +725,7 @@ export default class Locale {
 
   toPage(arg, fromPage) {
     if (isNumber(arg)) {
+      fromPage.calendar = this.calendar;
       return addPages(fromPage, arg);
     }
     if (isString(arg)) {

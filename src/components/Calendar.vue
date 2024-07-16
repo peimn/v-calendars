@@ -441,6 +441,7 @@ export default {
       if (!page) {
         return Promise.reject(new Error(`Invalid argument provided: ${arg}`));
       }
+      page.calendar = this.$locale.calendar;
       // Set position if unspecified and out of current bounds
       if (!position) {
         if (pageIsBeforePage(page, this.firstPage)) {
@@ -461,6 +462,8 @@ export default {
         }),
       );
       // Verify we can to move to any pages in the target range
+      opts.fromPage.calendar = this.$locale.calendar;
+      opts.toPage.calendar = this.$locale.calendar;
       return pageRangeToArray(opts.fromPage, opts.toPage).some(p =>
         pageIsBetweenPages(p, this.minPage_, this.maxPage_),
       );
