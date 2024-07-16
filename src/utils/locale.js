@@ -790,7 +790,7 @@ export default class Locale {
       timezone: 'UTC',
       calendar,
     });
-    return this.getMonthDates(calendar).map(d => dtf.format(d.toDate(getLocalTimeZone())));
+    return this.getMonthDates(calendar).map(d => dtf.formatToParts(d.toDate(getLocalTimeZone())).find(p => p.type === 'month').value);
   }
 
   getWeekdayDates(firstDayOfWeek = this.firstDayOfWeek) {
