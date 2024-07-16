@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { getLocalTimeZone } from '@internationalized/date';
 import SvgIcon from './SvgIcon';
 import { childMixin } from '../utils/mixins';
 import { head, last } from '../utils/_';
@@ -211,8 +212,8 @@ export default {
           month,
           year,
           id: `${year}.${pad(month, 2)}`,
-          label: this.locale.format(d, this.masks.navMonths),
-          ariaLabel: this.locale.format(d, 'MMMM YYYY'),
+          label: this.locale.format(d.toDate(getLocalTimeZone()), this.masks.navMonths),
+          ariaLabel: this.locale.format(d.toDate(getLocalTimeZone()), 'MMMM YYYY'),
           isActive: month === this.month && year === this.year,
           isCurrent: month === thisMonth && year === thisYear,
           isDisabled: !this.validator({ month, year }),
