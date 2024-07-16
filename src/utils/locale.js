@@ -792,7 +792,7 @@ export default class Locale {
   getMonthNames(calendar, length) {
     const dtf = new Intl.DateTimeFormat(this.id, {
       month: length,
-      timezome: 'UTC',
+      timezone: 'UTC',
       calendar,
     });
     return this.getMonthDates(calendar).map(d => dtf.format(d.toDate(getLocalTimeZone())));
