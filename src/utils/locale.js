@@ -321,8 +321,18 @@ export function resolveConfig(config, locales) {
   } else if (config?.calendar && supportedCalendars.includes(config?.calendar)) {
     calendar = config?.calendar;
   }
+  // get direction
+  let direction = new Intl.Locale(id)?.textInfo?.direction;
+  if (locales[id]?.direction && ['ltr', 'rtl'].includes(locales[id]?.direction)) {
+    direction = locales[id]?.direction;
+  }
+  if (config?.direction && !['ltr', 'rtl'].includes(config?.direction)) {
+    delete config.direction;
+  } else if (config?.direction && ['ltr', 'rtl'].includes(config?.direction)) {
+    direction = config?.direction;
+  }
   // Add fallback and spread default locale to prevent repetitive update loops
-  const defLocale = { ...locales['en-IE'], ...locales[id], id, calendar };
+  const defLocale = { ...locales['en-IE'], ...locales[id], id, calendar, direction };
   // Assign or merge defaults with provided config
   config = isObject(config) ? defaultsDeep(config, defLocale) : defLocale;
   // Return resolved config
@@ -331,7 +341,7 @@ export function resolveConfig(config, locales) {
 
 export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks, calendar } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks, calendar, direction } = resolveConfig(config, locales);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
@@ -346,6 +356,7 @@ export default class Locale {
     this.amPm = ['am', 'pm'];
     this.monthData = {};
     this.calendar = calendar;
+    this.direction = direction;
     this.createCalendar = createCalendar(calendar);
     // Bind methods
     this.getMonthComps = this.getMonthComps.bind(this);
