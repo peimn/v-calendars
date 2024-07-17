@@ -3,15 +3,15 @@ import { toPairs } from '../_';
 const locales = {
   // Arabic
   ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
-  'ar-SA': { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
+  'ar-SA': { dow: 7, L: 'D/\u200FM/\u200FYYYY', amPM: ['ق.ظ', 'ب.ظ'] },
   // Bulgarian
   bg: { dow: 2, L: 'D.MM.YYYY' },
   // Catalan
   ca: { dow: 2, L: 'DD/MM/YYYY' },
   // Chinese (China)
-  'zh-CN': { dow: 2, L: 'YYYY/MM/DD' },
+  'zh-CN': { dow: 2, L: 'YYYY/MM/DD', amPM: ['上午', '下午'] },
   // Chinese (Taiwan)
-  'zh-TW': { dow: 1, L: 'YYYY/MM/DD' },
+  'zh-TW': { dow: 1, L: 'YYYY/MM/DD', amPM: ['上午', '下午'] },
   // Croatian
   hr: { dow: 2, L: 'DD.MM.YYYY' },
   // Czech
@@ -39,7 +39,7 @@ const locales = {
   // Estonian
   et: { dow: 2, L: 'DD.MM.YYYY' },
   // Persian
-  'fa-IR': { dow: 7, L: 'YYYY/MM/DD' },
+  'fa-IR': { dow: 7, L: 'YYYY/MM/DD', amPM: ['ق.ظ', 'ب.ظ'] },
   // Finnish
   fi: { dow: 2, L: 'DD.MM.YYYY' },
   // French
@@ -51,15 +51,15 @@ const locales = {
   // German
   de: { dow: 2, L: 'DD.MM.YYYY' },
   // Hebrew
-  he: { dow: 1, L: 'DD.MM.YYYY' },
+  he: { dow: 1, L: 'DD.MM.YYYY', amPM: ['ל.ה', 'א.ה'] },
   // Indonesian
   id: { dow: 2, L: 'DD/MM/YYYY' },
   // Italian
   it: { dow: 2, L: 'DD/MM/YYYY' },
   // Japanese
-  ja: { dow: 1, L: 'YYYY年M月D日' },
+  ja: { dow: 1, L: 'YYYY年M月D日', amPM: ['午前', '午後'] },
   // Korean
-  ko: { dow: 1, L: 'YYYY.MM.DD' },
+  ko: { dow: 1, L: 'YYYY.MM.DD', amPM: ['오전', '오후'] },
   // Latvian
   lv: { dow: 2, L: 'DD.MM.YYYY' },
   // Lithuanian
@@ -88,7 +88,7 @@ const locales = {
   // Thai
   th: { dow: 1, L: 'DD/MM/YYYY' },
   // Turkish
-  tr: { dow: 2, L: 'DD.MM.YYYY' },
+  tr: { dow: 2, L: 'DD.MM.YYYY', amPM: ['ÖÖ', 'ÖS'] },
   // Ukrainian
   uk: { dow: 2, L: 'DD.MM.YYYY' },
   // Vietnam
