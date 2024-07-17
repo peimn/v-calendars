@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     date() {
-      let date = this.locale.normalizeDate(this.value);
+      let date = this.locale.normalizeDate(this.value.date);
       if (this.value.hours === 24) {
         date = new Date(date.getTime() - 1);
       }
