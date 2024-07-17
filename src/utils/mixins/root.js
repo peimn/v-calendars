@@ -16,7 +16,7 @@ export const rootMixin = {
     timezone: String,
     calendar: String,
     direction: String,
-    amPM: Object,
+    amPM: Array,
     minDate: null,
     maxDate: null,
     minDateExact: null,
