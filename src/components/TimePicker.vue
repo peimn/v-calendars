@@ -32,9 +32,11 @@
         </span>
       </div>
       <div class="vc-time">
-        <time-select v-model.number="hours" :options="hourOptions_" />
-        <span style="margin: 0 4px">:</span>
-        <time-select v-model.number="minutes" :options="minuteOptions" />
+        <div class="vc-time-select">
+          <time-select v-model.number="hours" :options="hourOptions_" />
+          <span style="margin: 0 4px">:</span>
+          <time-select v-model.number="minutes" :options="minuteOptions" />
+        </div>
         <div
           v-if="!is24hr"
           class="vc-am-pm"
@@ -236,14 +238,22 @@ export default {
   }
 }
 .vc-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.vc-time-select {
   display: flex;
   align-items: center;
+
+  [dir='rtl'] & {
+    flex-direction: row-reverse;
+  }
 }
 .vc-am-pm {
   display: flex;
   align-items: center;
   background: var(--gray-200);
-  margin-inline-start: 8px;
   padding: 4px;
   border-radius: var(--rounded);
   height: 30px;
