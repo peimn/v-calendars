@@ -349,7 +349,7 @@ export function resolveConfig(config, locales) {
 
 export default class Locale {
   constructor(config, { locales = defaultLocales, timezone } = {}) {
-    const { id, firstDayOfWeek, masks, calendar, direction } = resolveConfig(config, locales);
+    const { id, firstDayOfWeek, masks, calendar, direction, amPM } = resolveConfig(config, locales);
     this.id = id;
     this.daysInWeek = daysInWeek;
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek);
@@ -361,7 +361,7 @@ export default class Locale {
     this.dayNamesNarrow = this.getDayNames('narrow');
     this.monthNames = this.getMonthNames(calendar, 'long');
     this.monthNamesShort = this.getMonthNames(calendar, 'short');
-    this.amPm = ['am', 'pm'];
+    this.amPm = amPM ?? ['am', 'pm'];
     this.monthData = {};
     this.calendar = calendar;
     this.direction = direction;

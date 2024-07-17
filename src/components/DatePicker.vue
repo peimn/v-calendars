@@ -565,8 +565,8 @@ export default {
         m: date.getMinutes(),
         ss: String(date.getSeconds()).padStart(2, '0'),
         s: date.getSeconds(),
-        a: date.getHours() < 12 ? 'am' : 'pm',
-        A: date.getHours() < 12 ? 'AM' : 'PM'
+        a: date.getHours() < 12 ? this.$locale.amPm[0] : this.$locale.amPm[1],
+        A: date.getHours() < 12 ? this.$locale.amPm[0].toUpperCase() : this.$locale.amPm[1].toUpperCase()
       };
       if (format === 'iso' || !format) {
         return date;

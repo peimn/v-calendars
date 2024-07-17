@@ -47,14 +47,14 @@
             @click.prevent="isAM = true"
             type="button"
           >
-            AM
+            {{ this.locale.amPm[0].toUpperCase() }}
           </button>
           <button
             :class="{ active: !isAM, 'vc-disabled': pmDisabled }"
             @click.prevent="isAM = false"
             type="button"
           >
-            PM
+            {{ this.locale.amPm[1].toUpperCase() }}
           </button>
         </div>
       </div>
