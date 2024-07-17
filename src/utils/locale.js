@@ -754,7 +754,7 @@ export default class Locale {
       case 'ethiopic':
         return 2000;
       case 'ethioaa':
-        return 2000;
+        return 7500;
       case 'coptic':
         return 1720;
       case 'hebrew':
