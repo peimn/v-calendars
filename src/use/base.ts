@@ -30,6 +30,8 @@ export const propsDef = {
   masks: Object,
   locale: [String, Object] as PropType<string | Record<string, any> | Locale>,
   timezone: String,
+  calendar: String,
+  direction: String,
   minDate: null,
   maxDate: null,
   disabledDates: null,
@@ -70,6 +72,8 @@ export function createBase(props: BaseProps) {
             id: detID,
             firstDayOfWeek: props.firstDayOfWeek,
             masks: props.masks,
+            calendar: props.calendar ?? intLocale?.calendar,
+            direction: props.direction ?? 'ltr',
           }
     ) as Partial<LocaleConfig>;
     // Return new locale

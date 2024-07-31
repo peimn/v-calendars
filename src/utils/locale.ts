@@ -46,6 +46,8 @@ export interface LocaleConfig {
   id: string;
   firstDayOfWeek: number;
   masks: any;
+  calendar: string;
+  direction: string;
   monthCacheSize: number;
   pageCacheSize: number;
 }
@@ -70,11 +72,40 @@ export function resolveConfig(
   const localeKeys = Object.keys(locales);
   const validKey = (k: string) => localeKeys.find(lk => lk.toLowerCase() === k);
   id = validKey(id) || validKey(id.substring(0, 2)) || detLocale;
+  // get calendar
+  let calendar = new Intl.DateTimeFormat(id).resolvedOptions().calendar;
+  // supported calendars by @internationalized/date
+  const supportedCalendars = ['gregory', 'buddhist', 'ethiopic', 'ethioaa', 'coptic', 'hebrew', 'indian',
+    'islamic-civil', 'islamic-tbla', 'islamic-umalqura', 'japanese', 'persian', 'roc'];
+  if (locales[id]?.calendar && supportedCalendars.includes(locales[id]?.calendar)) {
+    calendar = locales[id]?.calendar;
+  }
+  if (!isString(config) && has(config, 'calendar')) {
+    if (config!.calendar && !supportedCalendars.includes(config!.calendar)) {
+      delete config!.calendar;
+    } else if (config!.calendar && supportedCalendars.includes(config!.calendar)) {
+      calendar = config!.calendar;
+    }
+  }
+  // get direction
+  let direction = 'ltr';
+  if (locales[id]?.direction && ['ltr', 'rtl'].includes(locales[id]?.direction)) {
+    direction = locales[id]?.direction;
+  }
+  if (!isString(config) && has(config, 'direction')) {
+    if (config!.direction && !['ltr', 'rtl'].includes(config!.direction)) {
+      delete config!.direction;
+    } else if (config!.direction && ['ltr', 'rtl'].includes(config!.direction)) {
+      direction = config!.direction;
+    }
+  }
   // Add fallback and spread default locale to prevent repetitive update loops
   const defLocale: LocaleConfig = {
     ...locales['en-IE'],
     ...locales[id],
     id,
+    calendar,
+    direction,
     monthCacheSize: DEFAULT_MONTH_CACHE_SIZE,
     pageCacheSize: DEFAULT_PAGE_CACHE_SIZE,
   };
@@ -103,12 +134,14 @@ export default class Locale {
   amPm: [string, string] = ['am', 'pm'];
   monthCache: Cache<MonthParts>;
   pageCache: Cache<CachedPage>;
+  direction: string;
+  calendar: string;
 
   constructor(
     config: Partial<LocaleConfig> | string | undefined = undefined,
     timezone?: string,
   ) {
-    const { id, firstDayOfWeek, masks, monthCacheSize, pageCacheSize } =
+    const { id, firstDayOfWeek, masks, calendar, direction, monthCacheSize, pageCacheSize } =
       resolveConfig(config, defaultLocales.value);
     this.monthCache = new Cache(
       monthCacheSize,
@@ -129,6 +162,8 @@ export default class Locale {
     this.monthNames = getMonthNames('long', this.id);
     this.monthNamesShort = getMonthNames('short', this.id);
     this.relativeTimeNames = getRelativeTimeNames(this.id);
+    this.direction = direction;
+    this.calendar = calendar;
   }
 
   formatDate(date: Date, masks: string | string[]) {
