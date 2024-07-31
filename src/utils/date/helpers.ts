@@ -234,7 +234,6 @@ export interface DateParts extends DayParts {
 export interface MonthParts {
   firstDayOfWeek: DayOfWeek;
   firstDayOfMonth: Date;
-  inLeapYear: boolean;
   firstWeekday: number;
   numDays: number;
   numWeeks: number;
