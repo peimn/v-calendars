@@ -94,6 +94,7 @@ export interface Page {
   weekdays: CalendarWeekday[];
   viewDays: CalendarDay[];
   viewWeeks: CalendarWeek[];
+  calendar: string;
 }
 
 export type PageAddress = Pick<Page, 'day' | 'week' | 'month' | 'year'>;
