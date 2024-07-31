@@ -6,6 +6,9 @@ import {
   getPage,
 } from './page';
 import {
+  createCalendar,
+} from '@internationalized/date';
+import {
   type DateSource,
   type DateOptions,
   type DayOfWeek,
@@ -136,6 +139,7 @@ export default class Locale {
   pageCache: Cache<CachedPage>;
   direction: string;
   calendar: string;
+  createCalendar: Calendar;
 
   constructor(
     config: Partial<LocaleConfig> | string | undefined = undefined,
@@ -164,6 +168,7 @@ export default class Locale {
     this.relativeTimeNames = getRelativeTimeNames(this.id);
     this.direction = direction;
     this.calendar = calendar;
+    this.createCalendar = createCalendar(calendar);
   }
 
   formatDate(date: Date, masks: string | string[]) {
