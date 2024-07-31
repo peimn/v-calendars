@@ -16,6 +16,10 @@ import addDays from 'date-fns/addDays';
 import addMonths from 'date-fns/addMonths';
 import addYears from 'date-fns/addYears';
 import { type LocaleConfig, default as Locale } from '../locale';
+import {
+  type Calendar,
+  CalendarDate,
+} from '@internationalized/date';
 
 export { addDays, addMonths, addYears };
 export { DateRepeat } from './repeat';
@@ -703,11 +707,17 @@ export function getMonthParts(
   month: number,
   year: number,
   firstDayOfWeek: DayOfWeek,
+  id: string,
+  createCalendar: Calendar,
 ) {
   const inLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-  const firstDayOfMonth = new Date(year, month - 1, 1);
+  let intlDate = new CalendarDate(createCalendar, year, month, 1);
+  const firstDayOfMonth = intlDate.toDate(getLocalTimeZone());
   const firstWeekday = firstDayOfMonth.getDay() + 1;
-  const numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+  let numDays = month === 2 && inLeapYear ? 29 : daysInMonths[month - 1];
+  if (createCalendar) {
+    numDays = createCalendar.getDaysInMonth(intlDate);
+  }
   const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
   const numWeeks = getWeeksInMonth(firstDayOfMonth, {
     weekStartsOn,
@@ -722,7 +732,6 @@ export function getMonthParts(
   return {
     firstDayOfWeek,
     firstDayOfMonth,
-    inLeapYear,
     firstWeekday,
     numDays,
     numWeeks,

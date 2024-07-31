@@ -282,7 +282,10 @@ export default class Locale {
 
   getMonthParts(month: number, year: number) {
     const { firstDayOfWeek } = this;
-    return this.monthCache.getOrSet(month, year, firstDayOfWeek);
+    if (!this.createCalendar) {
+      this.createCalendar = createCalendar('gregory');
+    }
+    return this.monthCache.getOrSet(month, year, firstDayOfWeek, this.id, this.createCalendar);
   }
 
   getThisMonthParts() {
