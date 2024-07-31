@@ -1,6 +1,8 @@
 interface LocaleConfig {
   dow: number;
   L: string;
+  calendar?: string | undefined;
+  direction?: string | undefined;
 }
 
 interface LocaleSetting {
@@ -9,6 +11,8 @@ interface LocaleSetting {
   masks: {
     L: string;
   };
+  calendar: string | undefined;
+  direction: string | undefined;
 }
 
 const locales: Record<string, LocaleConfig> = {
@@ -113,11 +117,13 @@ locales.zh = locales['zh-CN'];
 
 // Remap from abbr. to intuitive property names
 const localeSettings = Object.entries(locales).reduce(
-  (res, [id, { dow, L }]) => {
+  (res, [id, { dow, L, calendar, direction }]) => {
     res[id] = {
       id,
       firstDayOfWeek: dow,
       masks: { L },
+      calendar,
+      direction,
     };
     return res;
   },
