@@ -754,9 +754,11 @@ export function getWeekdayDates() {
 export function getDayNames(
   length: DayNameLength,
   localeId: string | undefined = undefined,
+  calendar: string | undefined = undefined,
 ) {
   const dtf = new Intl.DateTimeFormat(localeId, {
     weekday: length,
+    calendar,
   });
   return getWeekdayDates().map(d => dtf.format(d));
 }
@@ -797,10 +799,11 @@ export function getMonthDates() {
   return dates;
 }
 
-export function getMonthNames(length: MonthNameLength, localeId = undefined) {
+export function getMonthNames(length: MonthNameLength, localeId = undefined, calendar : string | undefined = undefined) {
   const dtf = new Intl.DateTimeFormat(localeId, {
     month: length,
     timeZone: 'UTC',
+    calendar,
   });
   return getMonthDates().map(d => dtf.format(d));
 }

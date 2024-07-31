@@ -159,12 +159,12 @@ export default class Locale {
     this.masks = masks;
     this.timezone = timezone || undefined;
     this.hourLabels = this.getHourLabels();
-    this.dayNames = getDayNames('long', this.id);
-    this.dayNamesShort = getDayNames('short', this.id);
+    this.dayNames = getDayNames('long', this.id, calendar);
+    this.dayNamesShort = getDayNames('short', this.id, calendar);
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
     this.dayNamesNarrow = getDayNames('narrow', this.id);
-    this.monthNames = getMonthNames('long', this.id);
-    this.monthNamesShort = getMonthNames('short', this.id);
+    this.monthNames = getMonthNames('long', this.id, calendar);
+    this.monthNamesShort = getMonthNames('short', this.id, calendar);
     this.relativeTimeNames = getRelativeTimeNames(this.id);
     this.direction = direction;
     this.calendar = calendar;
