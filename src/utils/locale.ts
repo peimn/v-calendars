@@ -57,8 +57,6 @@ export function resolveConfig(
   config: string | Partial<LocaleConfig> | undefined,
   locales: any,
 ) {
-  // Get the detected locale string
-  const detLocale = new Intl.DateTimeFormat().resolvedOptions().locale;
   // Resolve the locale id
   let id;
   if (isString(config)) {
@@ -66,6 +64,8 @@ export function resolveConfig(
   } else if (has(config, 'id')) {
     id = config!.id;
   }
+  // Get the detected locale string
+  const detLocale = new Intl.DateTimeFormat(id).resolvedOptions().locale;
   id = (id || detLocale).toLowerCase();
   const localeKeys = Object.keys(locales);
   const validKey = (k: string) => localeKeys.find(lk => lk.toLowerCase() === k);

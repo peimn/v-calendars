@@ -9,7 +9,7 @@ import { type DarkModeClassConfig, useDarkMode } from 'vue-screen-utils';
 import { Attribute } from '../utils/attribute';
 import { type DayOfWeek, addDays } from '../utils/date/helpers';
 import { getDefault } from '../utils/defaults';
-import { isObject } from '../utils/helpers';
+import { has, isObject, isString } from '../utils/helpers';
 import { default as Locale, type LocaleConfig } from '../utils/locale';
 import { Theme } from '../utils/theme';
 
@@ -51,11 +51,23 @@ export function createBase(props: BaseProps) {
     // Return the locale prop if it is an instance of the Locale class
     if (props.locale instanceof Locale) return props.locale;
     // Build up a base config from component props
+    let intLocale = null;
+    let detID;
+    let _id;
+    if (isString(props.locale)) {
+      _id = props.locale;
+    } else if (has(props.locale, 'id')) {
+      _id = props.locale!.id;
+    }
+    if (props.locale) {
+      intLocale = new Intl.Locale(_id);
+      detID = intLocale.region ? `${intLocale.language}-${intLocale.region}` : intLocale.language;
+    }
     const config = (
       isObject(props.locale)
         ? props.locale
         : {
-            id: props.locale,
+            id: detID,
             firstDayOfWeek: props.firstDayOfWeek,
             masks: props.masks,
           }
