@@ -19,7 +19,9 @@ import { type LocaleConfig, default as Locale } from '../locale';
 import {
   type Calendar,
   CalendarDate,
+  createCalendar,
   getLocalTimeZone,
+  toCalendar,
 } from '@internationalized/date';
 
 export { addDays, addMonths, addYears };
@@ -230,6 +232,8 @@ export interface DateParts extends DayParts {
   isValid: boolean;
   timezoneOffset: number;
   isPm?: boolean;
+  locale: string;
+  calendar: string;
 }
 
 export interface MonthParts {
@@ -647,6 +651,8 @@ export function getDateParts(date: Date, locale: Locale): DateParts {
     );
     tzDate.setMilliseconds(date.getMilliseconds());
   }
+  const intlDate = new CalendarDate(tzDate.getFullYear(), tzDate.getMonth() + 1, tzDate.getDate());
+  const localeCalendarDate = toCalendar(intlDate, locale.createCalendar ?? createCalendar('gregory'));
   const milliseconds = tzDate.getMilliseconds();
   const seconds = tzDate.getSeconds();
   const minutes = tzDate.getMinutes();
@@ -656,12 +662,12 @@ export function getDateParts(date: Date, locale: Locale): DateParts {
     seconds * MS_PER_SECOND +
     minutes * MS_PER_MINUTE +
     hours * MS_PER_HOUR;
-  const month = <MonthInYear>(tzDate.getMonth() + 1);
-  const year = tzDate.getFullYear();
+  const month = <MonthInYear>(localeCalendarDate.month);
+  const year = localeCalendarDate.year;
   const monthParts = locale.getMonthParts(month, year);
-  const day = <DayInMonth>tzDate.getDate();
+  const day = <DayInMonth>localeCalendarDate.day;
   const dayFromEnd = monthParts.numDays - day + 1;
-  const weekday = tzDate.getDay() + 1;
+  const weekday = intlDate.toDate(getLocalTimeZone()).getDay() + 1;
   const weekdayOrdinal = Math.floor((day - 1) / 7 + 1);
   const weekdayOrdinalFromEnd = Math.floor((monthParts.numDays - day) / 7 + 1);
   const week = Math.ceil(
@@ -691,6 +697,8 @@ export function getDateParts(date: Date, locale: Locale): DateParts {
     dayIndex,
     timezoneOffset: 0,
     isValid: true,
+    locale: locale.id,
+    calendar: locale.calendar,
   };
   return parts;
 }
