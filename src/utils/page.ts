@@ -555,7 +555,7 @@ export function getCachedPage(config: PageConfig, locale: Locale): CachedPage {
   };
 }
 
-export function getPage(config: PageConfig, cachedPage: CachedPage) {
+export function getPage(config: PageConfig, cachedPage: CachedPage, calendar: string) {
   const { day, week, view, trimWeeks } = config;
   const page: Page = {
     ...cachedPage,
@@ -563,6 +563,7 @@ export function getPage(config: PageConfig, cachedPage: CachedPage) {
     title: '',
     viewDays: [],
     viewWeeks: [],
+    calendar,
   };
   switch (view) {
     case 'daily': {

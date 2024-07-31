@@ -277,7 +277,7 @@ export default class Locale {
 
   getPage(config: PageConfig) {
     const cachedPage = this.pageCache.getOrSet(config, this);
-    return getPage(config, cachedPage);
+    return getPage(config, cachedPage, this.calendar);
   }
 
   getMonthParts(month: number, year: number) {
