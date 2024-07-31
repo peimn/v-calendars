@@ -17,8 +17,8 @@ interface LocaleSetting {
 
 const locales: Record<string, LocaleConfig> = {
   // Arabic
-  ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
-  'ar-SA': { dow: 7, L: 'D/\u200FM/\u200FYYYY' },
+  ar: { dow: 7, L: 'D/\u200FM/\u200FYYYY', direction: 'rtl' },
+  'ar-SA': { dow: 7, L: 'D/\u200FM/\u200FYYYY', direction: 'rtl' },
   // Bulgarian
   bg: { dow: 2, L: 'D.MM.YYYY' },
   // Catalan
@@ -54,7 +54,7 @@ const locales: Record<string, LocaleConfig> = {
   // Estonian
   et: { dow: 2, L: 'DD.MM.YYYY' },
   // Persian
-  'fa-IR': { dow: 7, L: 'YYYY/MM/DD' },
+  'fa-IR': { dow: 7, L: 'YYYY/MM/DD', direction: 'rtl' },
   // Finnish
   fi: { dow: 2, L: 'DD.MM.YYYY' },
   // French
@@ -66,7 +66,7 @@ const locales: Record<string, LocaleConfig> = {
   // German
   de: { dow: 2, L: 'DD.MM.YYYY' },
   // Hebrew
-  he: { dow: 1, L: 'DD.MM.YYYY' },
+  he: { dow: 1, L: 'DD.MM.YYYY', direction: 'rtl' },
   // Indonesian
   id: { dow: 2, L: 'DD/MM/YYYY' },
   // Italian
