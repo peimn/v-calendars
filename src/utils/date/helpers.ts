@@ -19,6 +19,7 @@ import { type LocaleConfig, default as Locale } from '../locale';
 import {
   type Calendar,
   CalendarDate,
+  getLocalTimeZone,
 } from '@internationalized/date';
 
 export { addDays, addMonths, addYears };
@@ -799,10 +800,50 @@ export function getRelativeTimeNames(localeId = undefined): TimeNames {
   }, {});
 }
 
-export function getMonthDates() {
+export function getStartingYear(calendar : string) : number {
+  switch (calendar) {
+    case 'gregory':
+      return 2000;
+    case 'buddhist':
+      return 2550;
+    case 'ethiopic':
+      return 2000;
+    case 'ethioaa':
+      return 2000;
+    case 'coptic':
+      return 1720;
+    case 'hebrew':
+      return 5750;
+    case 'indian':
+      return 1920;
+    case 'islamic-civil':
+    case 'islamic-tbla':
+    case 'islamic-umalqura':
+      return 1420;
+    case 'japanese':
+      return 1;
+    case 'persian':
+      return 1400;
+    case 'roc':
+      return 100;
+    default:
+      return 2000;
+  }
+}
+
+export function getMonthDates(creatCalendar : Calendar | undefined = undefined, year : number | undefined = undefined) {
+  if (!creatCalendar) {
+    return [];
+  }
+
+  if (!year) {
+    year = getStartingYear(creatCalendar.identifier);
+  }
+
+  const intlDate = new CalendarDate(creatCalendar, year, 1, 1);
   const dates = [];
-  for (let i = 0; i < 12; i++) {
-    dates.push(new Date(2000, i, 15));
+  for (let i = 0; i < creatCalendar.getMonthsInYear(intlDate); i++) {
+    dates.push(intlDate.add({ months: i }));
   }
   return dates;
 }
@@ -813,7 +854,7 @@ export function getMonthNames(length: MonthNameLength, localeId = undefined, cal
     timeZone: 'UTC',
     calendar,
   });
-  return getMonthDates().map(d => dtf.format(d));
+  return getMonthDates().map(d => dtf.format(d.toDate(getLocalTimeZone())));
 }
 
 export function datePartIsValid(

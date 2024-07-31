@@ -2,6 +2,7 @@ import { type Ref, inject, provide } from 'vue';
 import { useCalendar } from '..';
 import { getMonthDates } from '../utils/date/helpers';
 import { type Page, getPageId } from '../utils/page';
+import { getLocalTimeZone } from '@internationalized/date';
 
 export interface MonthNavItem {
   month: number;
@@ -25,14 +26,14 @@ export function createPage(page: Ref<Page>) {
 
   function getMonthItems(year: number, mask: string): MonthNavItem[] {
     const { month: thisMonth, year: thisYear } = getDateAddress(new Date());
-    return getMonthDates().map((d, i: number) => {
+    return getMonthDates(locale.value.createCalendar, year).map((d, i: number) => {
       const month = i + 1;
       return {
         month,
         year,
         id: getPageId(month, year),
-        label: locale.value.formatDate(d, mask),
-        ariaLabel: locale.value.formatDate(d, 'MMMM'),
+        label: locale.value.formatDate(d.toDate(getLocalTimeZone()), mask),
+        ariaLabel: locale.value.formatDate(d.toDate(getLocalTimeZone()), 'MMMM'),
         isActive: month === page.value.month && year === page.value.year,
         isCurrent: month === thisMonth && year === thisYear,
         isDisabled: !canMove(
