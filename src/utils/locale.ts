@@ -253,8 +253,12 @@ export default class Locale {
     return getDateParts(date, this);
   }
 
-  getDateFromParts(parts: Partial<SimpleDateParts>) {
-    return getDateFromParts(parts, this.timezone);
+  getDateFromParts(parts: Partial<SimpleDateParts>, calendar: string | undefined = undefined) {
+    let createdCalendar = null;
+    if (calendar && calendar !== this.calendar) {
+      createdCalendar = createCalendar(calendar);
+    }
+    return getDateFromParts(parts, this.timezone, calendar ?? this.calendar, createdCalendar ?? this.createCalendar);
   }
 
   getDateFromParams(

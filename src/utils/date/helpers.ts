@@ -609,7 +609,16 @@ export function diffInMonths(d1: Date, d2: Date) {
 export function getDateFromParts(
   parts: Partial<SimpleDateParts>,
   timezone = '',
+  calendar = '',
+  createCalendar : Calendar | null = null,
 ) {
+  if (parts.year != undefined && parts.month != undefined && parts.day != undefined && createCalendar && calendar) {
+    const intlDate = new CalendarDate(createCalendar, parts.year, parts.month, parts.day);
+    const date = intlDate.toDate(getLocalTimeZone());
+    parts.year = date.getFullYear();
+    parts.month = date.getMonth() + 1;
+    parts.day = date.getDate();
+  }
   const d = new Date();
   const {
     year = d.getFullYear(),
