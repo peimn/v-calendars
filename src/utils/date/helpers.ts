@@ -9,7 +9,6 @@ import {
   isObject,
 } from '../helpers';
 import { toDate } from 'date-fns-tz';
-import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import getWeek from 'date-fns/getWeek';
 import getISOWeek from 'date-fns/getISOWeek';
 import addDays from 'date-fns/addDays';
@@ -21,6 +20,7 @@ import {
   CalendarDate,
   createCalendar,
   getLocalTimeZone,
+  getWeeksInMonth,
   toCalendar,
 } from '@internationalized/date';
 
@@ -727,9 +727,7 @@ export function getMonthParts(
     numDays = createCalendar.getDaysInMonth(intlDate);
   }
   const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
-  const numWeeks = getWeeksInMonth(firstDayOfMonth, {
-    weekStartsOn,
-  });
+  let numWeeks = getWeeksInMonth(intlDate, id);
   const weeknumbers = [];
   const isoWeeknumbers = [];
   for (let i = 0; i < numWeeks; i++) {
