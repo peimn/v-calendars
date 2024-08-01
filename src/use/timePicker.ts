@@ -86,8 +86,8 @@ export function createTimePicker(props: TimePickerProps) {
 
   const date = computed(() => {
     if (!partsValid.value) return null;
-    let date = locale.value.toDate(parts.value as Partial<SimpleDateParts>);
-    if ((parts.value as DateParts).hours === 24) {
+    let { date } = parts.value as Partial<DateParts>;
+    if ((parts.value as DateParts).hours === 24 && date) {
       date = new Date(date.getTime() - 1);
     }
     return date;
