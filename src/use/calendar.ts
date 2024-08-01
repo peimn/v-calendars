@@ -48,6 +48,7 @@ import { addHorizontalSwipeHandler } from '../utils/touch';
 import { handleWatcher, skipWatcher } from '../utils/watchers';
 import { propsDef as basePropsDef, useOrCreateBase } from './base';
 import { provideSlots } from './slots';
+import { CalendarDate, startOfMonth, toCalendar } from '@internationalized/date';
 
 export type CalendarView = 'daily' | 'weekly' | 'monthly';
 
@@ -637,6 +638,15 @@ export function createCalendar(
   // #region Lifecycle methods
 
   // Created
+
+  if (locale.value.calendar !== 'gregory' && props.initialPage) {
+    const gregoryDate = new CalendarDate(props.initialPage.year, props.initialPage.month, props.initialPage.day ?? 1);
+    const intlDate = toCalendar(gregoryDate, locale.value.createCalendar);
+    const date = startOfMonth(intlDate);
+    props.initialPage.year = date.year;
+    props.initialPage.month = date.month;
+    props.initialPage.day = date.day;
+  }
 
   refreshPages({
     page: props.initialPage,
