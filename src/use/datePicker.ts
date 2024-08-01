@@ -1,47 +1,40 @@
 import {
-  type SetupContext,
-  type ExtractPropTypes,
-  type PropType,
-  ref,
   computed,
-  watch,
-  onMounted,
-  nextTick,
-  toRef,
+  type ExtractPropTypes,
   inject,
+  nextTick,
+  onMounted,
+  type PropType,
   provide,
+  ref,
+  type SetupContext,
+  toRef,
+  watch,
 } from 'vue';
 import Calendar from '../components/Calendar/Calendar.vue';
 import Popover from '../components/Popover/Popover.vue';
 import { getDefault } from '../utils/defaults';
 import type { AttributeConfig } from '../utils/attribute';
 import { type CalendarDay, getPageAddressForDate } from '../utils/page';
+import { defaultsDeep, isArray, isDate, isNumber, isObject, isString } from '../utils/helpers';
 import {
-  defaultsDeep,
-  isArray,
-  isDate,
-  isNumber,
-  isObject,
-  isString,
-} from '../utils/helpers';
-import {
-  type DatePatch,
   type DateParts,
   type DatePartsRules,
+  type DatePatch,
   type DateSource,
-  type SimpleDateParts,
   isDateParts,
+  type SimpleDateParts,
 } from '../utils/date/helpers';
 import type { SimpleDateRange } from '../utils/date/range';
 import {
+  getPopoverEventHandlers,
+  hidePopover as hp,
   type PopoverOptions,
   showPopover as sp,
-  hidePopover as hp,
   togglePopover as tp,
-  getPopoverEventHandlers,
 } from '../utils/popovers';
-import { propsDef as basePropsDef, createBase } from './base';
-import type { MoveTarget, MoveOptions } from './calendar';
+import { createBase, propsDef as basePropsDef } from './base';
+import type { MoveOptions, MoveTarget } from './calendar';
 import { provideSlots } from './slots';
 
 export type DateType = 'date' | 'string' | 'number';
