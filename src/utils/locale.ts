@@ -10,6 +10,7 @@ import {
   createCalendar,
 } from '@internationalized/date';
 import {
+  type DateParts,
   type DateSource,
   type DateOptions,
   type DayOfWeek,
@@ -22,6 +23,7 @@ import {
   daysInWeek,
   formatDate,
   parseDate,
+  parseDateParts,
   getDateParts,
   getDateFromParts,
   getDayNames,
@@ -31,6 +33,7 @@ import {
   getHourDates,
   getRelativeTimeNames,
   isDateParts,
+  formatDateParts,
 } from './date/helpers';
 import Cache from './cache';
 import { type DateRangeSource, DateRange } from './date/range';
@@ -175,10 +178,17 @@ export default class Locale {
   formatDate(date: Date, masks: string | string[], isPicker = false) {
     return formatDate(date, masks, this, isPicker);
   }
+
+  formatDateParts(dateParts: Partial<DateParts>, masks: string | string[], isPicker = false) {
+    return formatDateParts(dateParts, masks, this, isPicker);
   }
 
   parseDate(dateString: string, mask: string | string[]) {
     return parseDate(dateString, mask, this);
+  }
+
+  parseDateParts(dateString: string, mask: string | string[]) {
+    return parseDateParts(dateString, mask, this);
   }
 
   toDate(
@@ -226,6 +236,10 @@ export default class Locale {
   ): Date | null {
     const dte = this.toDate(d, opts);
     return isNaN(dte.getTime()) ? null : dte;
+  }
+
+  toDateParts(d: string, mask: string | string[],): Partial<DateParts> | undefined {
+    return parseDateParts(d, mask || 'iso', this);
   }
 
   fromDate(date: Date | null, { type, mask }: Partial<DateOptions> = {}, isPicker = false) {

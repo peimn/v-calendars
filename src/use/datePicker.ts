@@ -36,6 +36,7 @@ import {
 import { createBase, propsDef as basePropsDef } from './base';
 import type { MoveOptions, MoveTarget } from './calendar';
 import { provideSlots } from './slots';
+import { Calendar as IntlCalendar, CalendarDateTime, createCalendar, toCalendar } from '@internationalized/date';
 
 export type DateType = 'date' | 'string' | 'number';
 
@@ -550,6 +551,43 @@ export function createDatePicker(
         inputValues.value = [value && value.start, value && value.end];
       } else {
         inputValues.value = [value as string, ''];
+      }
+      const parsedDate = locale.value.toDateParts(inputValues.value[0], inputMask.value);
+      const createdCalendar : IntlCalendar = locale.value.createCalendar;
+      if (parsedDate !== undefined ) {
+        const { year, month, day, hours, minutes, seconds, milliseconds } = parsedDate;
+        if (year && month && day) {
+          const intlDate = new CalendarDateTime(createCalendar('gregory'), year, month, day, hours, minutes, seconds, milliseconds);
+          const intlLocaleDate = toCalendar(intlDate, createdCalendar);
+          inputValues.value[0] = locale.value.formatDateParts({
+            year: intlLocaleDate.year,
+            month: intlLocaleDate.month,
+            day: intlLocaleDate.day,
+            hours: intlLocaleDate.hour,
+            minutes: intlLocaleDate.minute,
+            seconds: intlLocaleDate.second,
+            milliseconds: intlLocaleDate.millisecond
+          }, inputMask.value);
+        }
+      }
+      if (isRange.value) {
+        const parsedEndDate = locale.value.toDateParts(inputValues.value[1], inputMask.value);
+        if (parsedEndDate !== undefined ) {
+          const { year: yearEnd, month: monthEnd, day: dayEnd, hours: hoursEnd, minutes: minutesEnd, seconds: secondsEnd, milliseconds: millisecondsEnd } = parsedEndDate;
+          if (yearEnd && monthEnd && dayEnd) {
+            const intlDateEnd = new CalendarDateTime(createCalendar('gregory'), yearEnd, monthEnd, dayEnd, hoursEnd, minutesEnd, secondsEnd, millisecondsEnd);
+            const intlLocaleDateEnd = toCalendar(intlDateEnd, createdCalendar);
+            inputValues.value[1] = locale.value.formatDateParts({
+              year: intlLocaleDateEnd.year,
+              month: intlLocaleDateEnd.month,
+              day: intlLocaleDateEnd.day,
+              hours: intlLocaleDateEnd.hour,
+              minutes: intlLocaleDateEnd.minute,
+              seconds: intlLocaleDateEnd.second,
+              milliseconds: intlLocaleDateEnd.millisecond
+            }, inputMask.value);
+          }
+        }
       }
     });
   }
