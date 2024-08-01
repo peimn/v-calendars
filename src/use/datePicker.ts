@@ -439,14 +439,14 @@ export function createDatePicker(
   ) {
     if (hasRangeValue(value)) {
       return {
-        start: locale.value.fromDate(value.start, config[0]),
-        end: locale.value.fromDate(value.end, config[1]),
+        start: locale.value.fromDate(value.start, config[0], true),
+        end: locale.value.fromDate(value.end, config[1], true),
       };
     }
     if (isRange.value) {
       return null;
     }
-    return locale.value.fromDate(value, config[0]);
+    return locale.value.fromDate(value, config[0], true);
   }
 
   function updateValue(
