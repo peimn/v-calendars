@@ -11,6 +11,12 @@ import {
 } from './date/helpers';
 import { pad, pick } from './helpers';
 import Locale from './locale';
+import {
+  CalendarDate,
+  getLocalTimeZone,
+  isToday,
+  isWeekend
+} from '@internationalized/date';
 
 export interface CalendarDay extends DayParts {
   id: string;
@@ -173,6 +179,7 @@ function getDays(
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    calendar: locale.calendar,
   });
   // Init counters with previous month's data
   let day = prevMonthComps.numDays - prevMonthDaysToShow + 1;
@@ -183,11 +190,7 @@ function getDays(
   let weekFromEnd = 1;
   let month = prevMonthComps.month;
   let year = prevMonthComps.year;
-  // Store todays comps
-  const today = new Date();
-  const todayDay = today.getDate();
-  const todayMonth = today.getMonth() + 1;
-  const todayYear = today.getFullYear();
+  let intlDate = new CalendarDate(locale.createCalendar, year, month, day);
   // Cycle through max weeks in month
   for (let w = 1; w <= weeksInMonth; w++) {
     // Cycle through days in week
@@ -211,6 +214,7 @@ function getDays(
         prevMonth = false;
         thisMonth = true;
       }
+      intlDate = intlDate.set({ month, year, day });
       const startDate = locale.getDateFromParams(year, month, day, 0, 0, 0, 0);
       const noonDate = locale.getDateFromParams(year, month, day, 12, 0, 0, 0);
       const endDate = locale.getDateFromParams(
@@ -223,13 +227,15 @@ function getDays(
         999,
       );
       const date = startDate;
-      const id = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
+      const localeID = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`;
+      const id = `${pad(intlDate.toDate(getLocalTimeZone()).getFullYear(), 4)}-${pad(intlDate.toDate(getLocalTimeZone()).getMonth() + 1, 2)}-${pad(intlDate.toDate(getLocalTimeZone()).getDate(), 2)}`;
+      const dayID = localeID !== id ? `${id} id-${localeID}` : id;
+      const weekend = isWeekend(intlDate, locale.id);
       const weekdayPosition = i;
       const weekdayPositionFromEnd = daysInWeek - i;
       const weeknumber = weeknumbers[w - 1];
       const isoWeeknumber = isoWeeknumbers[w - 1];
-      const isToday =
-        day === todayDay && month === todayMonth && year === todayYear;
+      const isItToday = isToday(intlDate, getLocalTimeZone());
       const isFirstDay = thisMonth && day === 1;
       const isLastDay = thisMonth && day === numDays;
       const onTop = w === 1;
@@ -239,10 +245,10 @@ function getDays(
       const dayIndex = getDayIndex(year, month, day);
       days.push({
         locale,
-        id,
+        id: localeID,
         position: ++position,
         label: day.toString(),
-        ariaLabel: formatter.format(new Date(year, month - 1, day)),
+        ariaLabel: formatter.format(intlDate.toDate(getLocalTimeZone())),
         day,
         dayFromEnd,
         weekday,
@@ -262,7 +268,7 @@ function getDays(
         endDate,
         noonDate,
         dayIndex,
-        isToday,
+        isToday: isItToday,
         isFirstDay,
         isLastDay,
         isDisabled: !thisMonth,
@@ -276,7 +282,7 @@ function getDays(
         onLeft,
         onRight,
         classes: [
-          `id-${id}`,
+          `id-${dayID}`,
           `day-${day}`,
           `day-from-end-${dayFromEnd}`,
           `weekday-${weekday}`,
@@ -286,7 +292,8 @@ function getDays(
           `week-${week}`,
           `week-from-end-${weekFromEnd}`,
           {
-            'is-today': isToday,
+            'is-weekend': weekend,
+            'is-today': isItToday,
             'is-first-day': isFirstDay,
             'is-last-day': isLastDay,
             'in-month': thisMonth,
