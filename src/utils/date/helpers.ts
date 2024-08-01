@@ -1080,6 +1080,57 @@ export function parseMask(dateString: string, m: string | string[], locale: Loca
   return date;
 }
 
+export function parseMaskToParts(dateString: string, m: string | string[], locale: Locale) {
+  if (typeof m !== 'string') {
+    throw new Error('Invalid mask');
+  }
+  // Reset string value
+  let str = dateString;
+  if (str.length > 1000) {
+    return false;
+  }
+  let isValid = true;
+  const dp: Partial<DateParts> = {};
+  m.replace(token, $0 => {
+    if (parseFlags[$0]) {
+      const info = parseFlags[$0];
+      const index = str.search(info[0]);
+      if (!~index) {
+        isValid = false;
+      } else {
+        str.replace(info[0], result => {
+          info[1](dp, result, locale);
+          str = str.substr(index + result.length);
+          return result;
+        });
+      }
+    }
+    return parseFlags[$0] ? '' : $0.slice(1, $0.length - 1);
+  });
+  if (!isValid) {
+    return false;
+  }
+  if (dp.hours != null) {
+    if (dp.isPm === true && +dp.hours !== 12) {
+      dp.hours = +dp.hours + 12;
+    } else if (dp.isPm === false && +dp.hours === 12) {
+      dp.hours = 0;
+    }
+  }
+  dp.year = Number(dp.year);
+  dp.month = Number(dp.month) + 1;
+  dp.day = Number(dp.day) || 1;
+  dp.hours = dp.hours || 0;
+  dp.minutes = dp.minutes || 0;
+  dp.seconds = dp.seconds || 0;
+  dp.milliseconds = dp.milliseconds || 0;
+  let date;
+  if (dp.timezoneOffset != null) {
+    dp.minutes = +(dp.minutes || 0) - +dp.timezoneOffset;
+  }
+  return dp;
+}
+
 export function parseDate(
   dateString: string,
   mask: string | string[],
@@ -1091,6 +1142,21 @@ export function parseDate(
       .map(m => parseMask(dateString, m, locale))
       .find(d => d) || new Date(dateString)
   );
+}
+
+export function parseDateParts(
+  dateString: string,
+  mask: string | string[],
+  locale: Locale,
+) : Partial<DateParts> | undefined {
+  const masks = normalizeMasks(mask, locale);
+  const find = (
+    masks
+      .map(m => parseMaskToParts(dateString, m, locale))
+      .find(d => d)
+  );
+
+  return find !== false ? find : undefined;
 }
 
 export function formatDate(
