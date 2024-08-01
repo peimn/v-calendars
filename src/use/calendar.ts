@@ -110,6 +110,7 @@ export const propsDef = {
   },
   showWeeknumbers: [Boolean, String],
   showIsoWeeknumbers: [Boolean, String],
+  showLocaleWeeknumbers: [Boolean, String],
   expanded: Boolean,
   borderless: Boolean,
   transparent: Boolean,
@@ -201,6 +202,8 @@ export function createCalendar(
   const showWeeknumbers = computed(() => !!props.showWeeknumbers);
 
   const showIsoWeeknumbers = computed(() => !!props.showIsoWeeknumbers);
+
+  const showLocaleWeeknumbers = computed(() => !!props.showLocaleWeeknumbers);
 
   const isMonthly = computed(() => _view.value === 'monthly');
   const isWeekly = computed(() => _view.value === 'weekly');
@@ -305,7 +308,7 @@ export function createCalendar(
   });
 
   const getWeeknumberPosition = (column: number, columnFromEnd: number) => {
-    const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers;
+    const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers || props.showLocaleWeeknumbers;
     if (showWeeknumbers == null) return '';
     if (isBoolean(showWeeknumbers)) {
       return showWeeknumbers ? 'left' : '';
@@ -413,6 +416,7 @@ export function createCalendar(
             columnFromEnd,
             showWeeknumbers: showWeeknumbers.value,
             showIsoWeeknumbers: showIsoWeeknumbers.value,
+            showLocaleWeeknumbers: showLocaleWeeknumbers.value,
             weeknumberPosition,
           }),
         );
@@ -750,6 +754,7 @@ export function createCalendar(
     navVisibility,
     showWeeknumbers,
     showIsoWeeknumbers,
+    showLocaleWeeknumbers,
     getDateAddress,
     canMove,
     canMoveBy,

@@ -19,8 +19,12 @@ import {
   type Calendar,
   CalendarDate,
   createCalendar,
+  endOfYear,
+  getDayOfWeek,
   getLocalTimeZone,
   getWeeksInMonth,
+  startOfWeek as intlStartOfWeek,
+  startOfYear,
   toCalendar,
 } from '@internationalized/date';
 
@@ -246,6 +250,7 @@ export interface MonthParts {
   year: number;
   weeknumbers: number[];
   isoWeeknumbers: number[];
+  localeWeeknumbers: number[],
 }
 
 export type DatePatch = 'dateTime' | 'date' | 'time';
@@ -728,12 +733,46 @@ export function getMonthParts(
   }
   const weekStartsOn: WeekStartsOn = (firstDayOfWeek - 1) as WeekStartsOn;
   let numWeeks = getWeeksInMonth(intlDate, id);
+  let addToWeeks = 0;
+  let addToAllWeeks = 0;
+  if (createCalendar) {
+    if (['indian', 'ethiopic', 'buddhist', 'islamic-umalqura'].includes(createCalendar.identifier)) {
+      // calculate the number of weeks in indian, ethiopic, umalqura and buddhist calendars
+      const prevMonthDaysToShow =
+        firstWeekday +
+        (firstWeekday < firstDayOfWeek ? daysInWeek : 0) -
+        firstDayOfWeek;
+      numWeeks = Math.ceil((prevMonthDaysToShow + numDays) / 7);
+      if (createCalendar.identifier === 'islamic-umalqura' && prevMonthDaysToShow === 0) {
+        addToWeeks = 1;
+      }
+
+      if (['ethiopic', 'indian'].includes(createCalendar.identifier) && getDayOfWeek(endOfYear(intlDate.subtract({ years: 1 })), id) === 6) {
+        addToAllWeeks = 1;
+      }
+
+      if (['ethiopic', 'indian'].includes(createCalendar.identifier) && prevMonthDaysToShow === 6) {
+        addToWeeks = -1;
+      }
+    }
+  }
   const weeknumbers = [];
   const isoWeeknumbers = [];
+  const localeWeeknumbers = [];
+  const yearStart = startOfYear(intlDate);
+  const yearWeekStart = intlStartOfWeek(yearStart, id).toDate(getLocalTimeZone());
   for (let i = 0; i < numWeeks; i++) {
     const date = addDays(firstDayOfMonth, i * 7);
     weeknumbers.push(getWeek(date, { weekStartsOn }));
     isoWeeknumbers.push(getISOWeek(date));
+    // get locale week number
+    const diff = intlStartOfWeek(intlDate, id).toDate(getLocalTimeZone()).getTime() - yearWeekStart.getTime();
+    // Round the number of weeks to the nearest integer because the number of
+    // milliseconds in a week is not constant (e.g., it's different in the week of
+    // the daylight-saving time clock shift).
+    const millisecondsInWeek = 604800000;
+    localeWeeknumbers.push(Math.round(diff / millisecondsInWeek) + 1 + addToWeeks + addToAllWeeks);
+    intlDate = intlDate.add({ weeks: 1 });
   }
   return {
     firstDayOfWeek,
@@ -745,6 +784,7 @@ export function getMonthParts(
     year,
     weeknumbers,
     isoWeeknumbers,
+    localeWeeknumbers,
   };
 }
 

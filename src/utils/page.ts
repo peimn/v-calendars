@@ -27,6 +27,7 @@ export interface CalendarDay extends DayParts {
   weekdayPositionFromEnd: number;
   weekPosition: number;
   isoWeeknumber: number;
+  localeWeeknumber: number;
   startDate: Date;
   noonDate: Date;
   endDate: Date;
@@ -53,6 +54,7 @@ export interface CalendarWeek {
   weekPosition: number;
   weeknumber: number;
   isoWeeknumber: number;
+  localeWeeknumber: number;
   weeknumberDisplay?: number;
   days: CalendarDay[];
   title: string;
@@ -82,6 +84,7 @@ export interface Page {
   columnFromEnd: number;
   showWeeknumbers: boolean;
   showIsoWeeknumbers: boolean;
+  showLocaleWeeknumbers: boolean;
   weeknumberPosition: string;
   monthTitle: string;
   weekTitle?: string;
@@ -121,6 +124,7 @@ export type PageConfig = Pick<
   | 'columnFromEnd'
   | 'showWeeknumbers'
   | 'showIsoWeeknumbers'
+  | 'showLocaleWeeknumbers'
   | 'weeknumberPosition'
 >;
 
@@ -162,6 +166,7 @@ function getDays(
     firstWeekday,
     isoWeeknumbers,
     weeknumbers,
+    localeWeeknumbers,
     numDays,
     numWeeks,
   } = monthComps;
@@ -235,6 +240,7 @@ function getDays(
       const weekdayPositionFromEnd = daysInWeek - i;
       const weeknumber = weeknumbers[w - 1];
       const isoWeeknumber = isoWeeknumbers[w - 1];
+      const localeWeeknumber = localeWeeknumbers[w - 1];
       const isItToday = isToday(intlDate, getLocalTimeZone());
       const isFirstDay = thisMonth && day === 1;
       const isLastDay = thisMonth && day === numDays;
@@ -261,6 +267,7 @@ function getDays(
         weekPosition: w,
         weeknumber,
         isoWeeknumber,
+        localeWeeknumber,
         month,
         year,
         date,
@@ -338,6 +345,7 @@ function getWeeks(
   days: CalendarDay[],
   showWeeknumbers: boolean,
   showIsoWeeknumbers: boolean,
+  showLocaleWeeknumbers: boolean,
   locale: Locale,
 ): CalendarWeek[] {
   const result = days.reduce((result: CalendarWeek[], day: CalendarDay, i) => {
@@ -351,10 +359,13 @@ function getWeeks(
         weekPosition: day.weekPosition,
         weeknumber: day.weeknumber,
         isoWeeknumber: day.isoWeeknumber,
+        localeWeeknumber: day.localeWeeknumber,
         weeknumberDisplay: showWeeknumbers
           ? day.weeknumber
           : showIsoWeeknumbers
           ? day.isoWeeknumber
+          : showLocaleWeeknumbers
+          ? day.localeWeeknumber
           : undefined,
         days: [],
       };
@@ -537,14 +548,14 @@ export function getPageKey(config: PageConfig) {
 }
 
 export function getCachedPage(config: PageConfig, locale: Locale): CachedPage {
-  const { month, year, showWeeknumbers, showIsoWeeknumbers } = config;
+  const { month, year, showWeeknumbers, showIsoWeeknumbers, showLocaleWeeknumbers } = config;
   const intlDate = new CalendarDate(locale.createCalendar, year, month, 1);
   const date = intlDate.toDate(getLocalTimeZone());
   const monthComps = locale.getMonthParts(month, year);
   const prevMonthComps = locale.getPrevMonthParts(month, year);
   const nextMonthComps = locale.getNextMonthParts(month, year);
   const days = getDays({ monthComps, prevMonthComps, nextMonthComps }, locale);
-  const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, locale);
+  const weeks = getWeeks(days, showWeeknumbers, showIsoWeeknumbers, showLocaleWeeknumbers, locale);
   const weekdays = getWeekdays(weeks[0], locale);
   return {
     id: getPageKey(config),
