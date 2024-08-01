@@ -6,6 +6,7 @@ import {
   getPage,
 } from './page';
 import {
+  type Calendar,
   createCalendar,
 } from '@internationalized/date';
 import {
