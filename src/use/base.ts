@@ -73,7 +73,7 @@ export function createBase(props: BaseProps) {
             firstDayOfWeek: props.firstDayOfWeek,
             masks: props.masks,
             calendar: props.calendar ?? intLocale?.calendar,
-            direction: props.direction ?? 'ltr',
+            direction: props.direction,
           }
     ) as Partial<LocaleConfig>;
     // Return new locale

@@ -51,6 +51,7 @@ import CalendarSlot from './CalendarSlot.vue';
 const props = defineProps<{
   page: Page;
   layout?: string;
+  direction?: string;
   isLg?: boolean;
   isXl?: boolean;
   is2xl?: boolean;
@@ -88,8 +89,8 @@ const navPopoverOptions = computed(() => {
     isInteractive: true,
   };
 });
-const titleLeft = computed(() => props.page.titlePosition.includes('left'));
-const titleRight = computed(() => props.page.titlePosition.includes('right'));
+const titleLeft = computed(() => props.page.titlePosition.includes(props.direction === 'ltr' ? 'left' : 'right'));
+const titleRight = computed(() => props.page.titlePosition.includes(props.direction === 'ltr' ? 'right' : 'left'));
 const layout_ = computed(() => {
   if (props.layout) return props.layout;
   if (titleLeft.value) return 'tu-pn';
@@ -197,6 +198,10 @@ const gridStyle = computed(() => {
     &:disabled {
       opacity: 0.25;
       pointer-events: none;
+    }
+
+    [dir='rtl'] & {
+      transform: rotate(180deg);
     }
   }
 }

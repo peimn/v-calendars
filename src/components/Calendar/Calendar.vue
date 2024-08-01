@@ -1,5 +1,6 @@
 <template>
   <div
+    :dir="locale.direction"
     data-helptext="Press the arrow keys to navigate by day, Home and End to navigate to week ends, PageUp and PageDown to navigate by month, Alt+PageUp and Alt+PageDown to navigate by year"
     v-bind="$attrs"
     :class="[
@@ -19,7 +20,7 @@
     <!--Calendar Container-->
     <div :class="['vc-pane-container', { 'in-transition': inTransition }]">
       <div class="vc-pane-header-wrapper">
-        <CalendarHeader v-if="firstPage" :page="firstPage!" is-lg hide-title />
+        <CalendarHeader v-if="firstPage" :page="firstPage!" :direction="locale.direction" is-lg hide-title />
       </div>
       <Transition
         :name="`vc-${transitionName}`"
@@ -50,9 +51,9 @@
     </div>
   </div>
   <!--Day popover-->
-  <CalendarDayPopover />
+  <CalendarDayPopover :dir="locale.direction" />
   <!--Nav popover-->
-  <CalendarNavPopover />
+  <CalendarNavPopover :dir="locale.direction" />
 </template>
 
 <script lang="ts">

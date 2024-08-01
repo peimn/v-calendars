@@ -312,12 +312,12 @@ export function createCalendar(
     const showWeeknumbers = props.showWeeknumbers || props.showIsoWeeknumbers || props.showLocaleWeeknumbers;
     if (showWeeknumbers == null) return '';
     if (isBoolean(showWeeknumbers)) {
-      return showWeeknumbers ? 'left' : '';
+      return showWeeknumbers ? locale.value.direction === 'ltr' ? 'left' : 'right' : '';
     }
     if (showWeeknumbers.startsWith('right')) {
-      return columnFromEnd > 1 ? 'right' : showWeeknumbers;
+      return columnFromEnd > 1 ? locale.value.direction === 'ltr' ? 'right' : 'left' : showWeeknumbers;
     }
-    return column > 1 ? 'left' : showWeeknumbers;
+    return column > 1 ? locale.value.direction === 'ltr' ? 'left' : 'right' : showWeeknumbers;
   };
 
   const getPageForAttributes = () => {
@@ -380,8 +380,9 @@ export function createCalendar(
     if (defaultTransition === 'slide-v') {
       return movePrev ? 'slide-down' : 'slide-up';
     }
+    const moveDir = locale.value.direction === 'ltr' ? ['right', 'left'] : ['left', 'right'];
     // Horizontal slide
-    return movePrev ? 'slide-right' : 'slide-left';
+    return movePrev ? `slide-${moveDir[0]}` : `slide-${moveDir[1]}`;
   };
 
   const refreshPages = (opts: Partial<RefreshOptions> = {}) => {
@@ -564,15 +565,16 @@ export function createCalendar(
     emit('daykeydown', day, event);
     const date = day.noonDate;
     let newDate = null;
+    const reverse = locale.value.direction === 'rtl';
     switch (event.key) {
       case 'ArrowLeft': {
         // Move to previous day
-        newDate = addDays(date, -1);
+        newDate = addDays(date, reverse? 1 : -1);
         break;
       }
       case 'ArrowRight': {
         // Move to next day
-        newDate = addDays(date, 1);
+        newDate = addDays(date, reverse? -1 : 1);
         break;
       }
       case 'ArrowUp': {
@@ -598,20 +600,20 @@ export function createCalendar(
       case 'PageUp': {
         if (event.altKey) {
           // Move to previous year w/ Alt/Option key
-          newDate = addYears(date, -1);
+          newDate = addYears(date, reverse ? 1 : -1);
         } else {
           // Move to previous month
-          newDate = addMonths(date, -1);
+          newDate = addMonths(date, reverse ? 1 : -1);
         }
         break;
       }
       case 'PageDown': {
         if (event.altKey) {
           // Move to next year w/ Alt/Option key
-          newDate = addYears(date, 1);
+          newDate = addYears(date, reverse ? -1 : 1);
         } else {
           // Move to next month
-          newDate = addMonths(date, 1);
+          newDate = addMonths(date, reverse ? -1 : 1);
         }
         break;
       }

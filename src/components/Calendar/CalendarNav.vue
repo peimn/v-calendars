@@ -6,7 +6,7 @@
       <!--Move prev button-->
       <button
         type="button"
-        class="vc-nav-arrow is-left vc-focus"
+        class="vc-nav-arrow is-start vc-focus"
         :disabled="!prevItemsEnabled"
         @click="movePrev"
         @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, movePrev)"
@@ -31,7 +31,7 @@
       <!--Move next button-->
       <button
         type="button"
-        class="vc-nav-arrow is-right vc-focus"
+        class="vc-nav-arrow is-end vc-focus"
         :disabled="!nextItemsEnabled"
         @click="moveNext"
         @keydown="(e: KeyboardEvent) => onSpaceOrEnter(e, moveNext)"
@@ -294,6 +294,10 @@ onMounted(() => focusFirstItem());
   width: 26px;
   height: 30px;
   padding: 0;
+
+  [dir='rtl'] & {
+    transform: rotate(180deg);
+  }
 }
 
 .vc-nav-items {

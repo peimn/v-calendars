@@ -121,6 +121,7 @@ const {
 }
 
 .vc-time-select-group {
+  direction: ltr;
   display: inline-flex;
   align-items: center;
   padding: 0 4px;
@@ -128,7 +129,7 @@ const {
   border-radius: var(--vc-rounded-md);
   border: 1px solid var(--vc-time-select-group-border);
   .vc-base-icon {
-    margin-right: 4px;
+    margin-inline-end: 4px;
     color: var(--vc-time-select-group-icon-color);
   }
   select {
@@ -144,24 +145,28 @@ const {
 
 .vc-time-month {
   color: var(--vc-time-month-color);
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 
 .vc-time-day {
   color: var(--vc-time-day-color);
-  margin-left: 4px;
+  margin-inline-start: 4px;
 }
 
 .vc-time-year {
   color: var(--vc-time-year-color);
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 
 .vc-time-colon {
-  margin: 0 1px 2px 2px;
+  margin-inline-start: 2px;
+  margin-inline-end: 1px;
+  margin-top: 0;
+  margin-bottom: 2px;
 }
 
 .vc-time-decimal {
-  margin: 0 0 0 1px;
+  margin: 0;
+  margin-inline-start: 1px;
 }
 </style>

@@ -308,8 +308,8 @@ function getDays(
             'in-next-month': nextMonth,
             'on-top': onTop,
             'on-bottom': onBottom,
-            'on-left': onLeft,
-            'on-right': onRight,
+            [`on-${locale.direction === 'ltr' ? 'left' : 'right'}`]: onLeft,
+            [`on-${locale.direction === 'ltr' ? 'right' : 'left'}`]: onRight,
           },
         ],
       });
