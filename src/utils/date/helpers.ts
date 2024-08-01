@@ -1081,6 +1081,7 @@ export function formatDate(
   date: Date,
   masks: string | string[],
   locale: Locale,
+  isPicker = false,
 ) {
   if (date == null) return '';
   let mask = normalizeMasks(masks, locale)[0];
@@ -1093,6 +1094,11 @@ export function formatDate(
     return '??';
   });
   const dateParts = locale.getDateParts(date);
+  if (isPicker) {
+    dateParts.year = dateParts.date.getFullYear();
+    dateParts.month = dateParts.date.getMonth() + 1;
+    dateParts.day = dateParts.date.getDate();
+  }
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags

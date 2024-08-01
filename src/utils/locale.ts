@@ -172,8 +172,9 @@ export default class Locale {
     this.createCalendar = createCalendar(calendar);
   }
 
-  formatDate(date: Date, masks: string | string[]) {
-    return formatDate(date, masks, this);
+  formatDate(date: Date, masks: string | string[], isPicker = false) {
+    return formatDate(date, masks, this, isPicker);
+  }
   }
 
   parseDate(dateString: string, mask: string | string[]) {
@@ -227,12 +228,12 @@ export default class Locale {
     return isNaN(dte.getTime()) ? null : dte;
   }
 
-  fromDate(date: Date | null, { type, mask }: Partial<DateOptions> = {}) {
+  fromDate(date: Date | null, { type, mask }: Partial<DateOptions> = {}, isPicker = false) {
     switch (type) {
       case 'number':
         return date ? date.getTime() : NaN;
       case 'string':
-        return date ? this.formatDate(date, mask || 'iso') : '';
+        return date ? this.formatDate(date, mask || 'iso', isPicker) : '';
       case 'object':
         return date ? this.getDateParts(date) : null;
       default:
