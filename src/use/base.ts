@@ -32,6 +32,7 @@ export const propsDef = {
   timezone: String,
   calendar: String,
   direction: String,
+  amPM: [String, String],
   minDate: null,
   maxDate: null,
   disabledDates: null,
@@ -74,6 +75,7 @@ export function createBase(props: BaseProps) {
             masks: props.masks,
             calendar: props.calendar ?? intLocale?.calendar,
             direction: props.direction,
+            amPM: props.amPM,
           }
     ) as Partial<LocaleConfig>;
     // Return new locale

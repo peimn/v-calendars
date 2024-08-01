@@ -170,9 +170,9 @@ export function createTimePicker(props: TimePickerProps) {
   const isAMOptions = computed(() => {
     const result = [];
     if (arrayHasItems(amHourOptions.value))
-      result.push({ value: true, label: 'AM' });
+      result.push({ value: true, label: locale.value.amPm[0].toUpperCase() });
     if (arrayHasItems(pmHourOptions.value))
-      result.push({ value: false, label: 'PM' });
+      result.push({ value: false, label: locale.value.amPm[1].toUpperCase() });
     return result;
   });
 

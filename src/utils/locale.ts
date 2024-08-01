@@ -55,6 +55,7 @@ export interface LocaleConfig {
   masks: any;
   calendar: string;
   direction: string;
+  amPM: [string, string];
   monthCacheSize: number;
   pageCacheSize: number;
 }
@@ -138,7 +139,7 @@ export default class Locale {
   monthNames: string[];
   monthNamesShort: string[];
   relativeTimeNames: TimeNames;
-  amPm: [string, string] = ['am', 'pm'];
+  amPm: [string, string];
   monthCache: Cache<MonthParts>;
   pageCache: Cache<CachedPage>;
   direction: string;
@@ -149,7 +150,7 @@ export default class Locale {
     config: Partial<LocaleConfig> | string | undefined = undefined,
     timezone?: string,
   ) {
-    const { id, firstDayOfWeek, masks, calendar, direction, monthCacheSize, pageCacheSize } =
+    const { id, firstDayOfWeek, masks, calendar, direction, amPM, monthCacheSize, pageCacheSize } =
       resolveConfig(config, defaultLocales.value);
     this.monthCache = new Cache(
       monthCacheSize,
@@ -162,6 +163,7 @@ export default class Locale {
     this.firstDayOfWeek = clamp(firstDayOfWeek, 1, daysInWeek) as DayOfWeek;
     this.masks = masks;
     this.timezone = timezone || undefined;
+    this.amPm = amPM ?? ['am', 'pm'];
     this.hourLabels = this.getHourLabels();
     this.dayNames = getDayNames('long', this.id, calendar);
     this.dayNamesShort = getDayNames('short', this.id, calendar);
