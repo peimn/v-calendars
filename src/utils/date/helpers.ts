@@ -327,11 +327,21 @@ const formatFlags: any = {
   MM(d: DateParts) {
     return pad(d.month, 2);
   },
-  MMM(d: DateParts, l: Locale) {
-    return l.monthNamesShort[d.month - 1];
+  MMM(d: DateParts, l: Locale) : string {
+    const dtf = new Intl.DateTimeFormat(d.locale, {
+      month: 'short',
+      calendar: d.calendar,
+    });
+    const parts = dtf.formatToParts(d.date).find(p => p.type === 'month');
+    return parts !== undefined ? parts.value : l.monthNamesShort[d.month - 1];
   },
   MMMM(d: DateParts, l: Locale) {
-    return l.monthNames[d.month - 1];
+    const dtf = new Intl.DateTimeFormat(d.locale, {
+      month: 'long',
+      calendar: d.calendar,
+    });
+    const parts = dtf.formatToParts(d.date).find(p => p.type === 'month');
+    return parts !== undefined ? parts.value : l.monthNames[d.month - 1];
   },
   YY(d: DateParts) {
     return String(d.year).substr(2);
