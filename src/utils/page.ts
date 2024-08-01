@@ -538,7 +538,8 @@ export function getPageKey(config: PageConfig) {
 
 export function getCachedPage(config: PageConfig, locale: Locale): CachedPage {
   const { month, year, showWeeknumbers, showIsoWeeknumbers } = config;
-  const date = new Date(year, month - 1, 15);
+  const intlDate = new CalendarDate(locale.createCalendar, year, month, 1);
+  const date = intlDate.toDate(getLocalTimeZone());
   const monthComps = locale.getMonthParts(month, year);
   const prevMonthComps = locale.getPrevMonthParts(month, year);
   const nextMonthComps = locale.getNextMonthParts(month, year);
