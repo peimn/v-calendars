@@ -1190,3 +1190,29 @@ export function formatDate(
   // Inline literal values back into the formatted value
   return mask.replace(/\?\?/g, () => literals.shift()!);
 }
+
+export function formatDateParts(
+  dateParts: Partial<DateParts>,
+  masks: string | string[],
+  locale: Locale,
+  isPicker = false,
+) {
+  if (dateParts == null) return '';
+  let mask = normalizeMasks(masks, locale)[0];
+  // Convert timezone to utc if needed
+  if (/Z$/.test(mask)) locale.timezone = 'utc';
+  const literals: string[] = [];
+  // Make literals inactive by replacing them with ??
+  mask = mask.replace(literal, ($0, $1: string) => {
+    literals.push($1);
+    return '??';
+  });
+  // Apply formatting rules
+  mask = mask.replace(token, $0 =>
+    $0 in formatFlags
+      ? formatFlags[$0](dateParts, locale)
+      : $0.slice(1, $0.length - 1),
+  );
+  // Inline literal values back into the formatted value
+  return mask.replace(/\?\?/g, () => literals.shift()!);
+}
