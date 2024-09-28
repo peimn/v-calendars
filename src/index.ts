@@ -4,8 +4,7 @@ import './styles/index.css';
 import { setVueInstance } from './utils/config/index';
 import { type Defaults, setupDefaults } from './utils/defaults';
 
-// Use named exports instead of default export
-export const install = (app: App, defaults: Defaults = {}) => {
+const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
   app.use(setupDefaults, defaults);
   const prefix = app.config.globalProperties.$VCalendar.componentPrefix;
