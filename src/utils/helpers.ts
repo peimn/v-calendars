@@ -27,7 +27,8 @@ export const isObject = (value: unknown): value is Object =>
   getType(value) === 'Object';
 
 // Object utils
-export const has = _has;
+// Locally wrap and export the function to avoid the re-export type issue
+export const has = (obj: any, path: string | string[]): boolean => _has(obj, path);
 export const hasAny = (obj: object, props: string[]) =>
   _some(props, p => _has(obj, p));
 

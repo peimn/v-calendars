@@ -56,16 +56,20 @@ export function createBase(props: BaseProps) {
     // Build up a base config from component props
     let intLocale = null;
     let detID;
-    let _id;
+    let _id: string | undefined;
     if (isString(props.locale)) {
       _id = props.locale;
     } else if (has(props.locale, 'id')) {
       _id = props.locale!.id;
     }
-    if (props.locale) {
-      intLocale = new Intl.Locale(_id);
+
+    // Ensure _id is not undefined before creating a new Intl.Locale
+    if (_id) {
+      // Provide a default value for _id if it's undefined
+      intLocale = new Intl.Locale(_id || 'en');
       detID = intLocale.region ? `${intLocale.language}-${intLocale.region}` : intLocale.language;
     }
+
     const config = (
       isObject(props.locale)
         ? props.locale

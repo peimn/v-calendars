@@ -9,4 +9,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['tests/unit/setup.ts'],
   },
+  build: {
+    rollupOptions: {
+      // This ensures that only named exports are used and avoids conflicts with default exports
+      output: {
+        exports: 'named',  // Ensure the output uses named exports
+      },
+    },
+  },
 });

@@ -1010,7 +1010,7 @@ export function parseMask(dateString: string, m: string | string[], locale: Loca
   let str = dateString;
   // Avoid regular expression denial of service, fail early for really long strings
   // https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS
-  if (str.length > 1000) {
+  if (str?.length > 1000) {
     return false;
   }
 
@@ -1086,7 +1086,7 @@ export function parseMaskToParts(dateString: string, m: string | string[], local
   }
   // Reset string value
   let str = dateString;
-  if (str.length > 1000) {
+  if (str?.length > 1000) {
     return false;
   }
   let isValid = true;

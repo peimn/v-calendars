@@ -4,7 +4,8 @@ import './styles/index.css';
 import { setVueInstance } from './utils/config/index';
 import { type Defaults, setupDefaults } from './utils/defaults';
 
-const install = (app: App, defaults: Defaults = {}) => {
+// Use named exports instead of default export
+export const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
   app.use(setupDefaults, defaults);
   const prefix = app.config.globalProperties.$VCalendar.componentPrefix;
@@ -15,9 +16,9 @@ const install = (app: App, defaults: Defaults = {}) => {
 };
 
 export default { install };
+// Export everything as named exports
 export * from './components';
 export { setupDefaults as setupCalendar } from './utils/defaults';
 export { popoverDirective } from './utils/popovers';
-
 export { createCalendar, useCalendar } from './use/calendar';
 export { createDatePicker, useDatePicker } from './use/datePicker';

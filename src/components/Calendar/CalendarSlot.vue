@@ -1,11 +1,14 @@
 <template>
+  <!-- Only render <Component> if slot is not null or undefined -->
   <Component v-if="slot" :is="slot" v-bind="$attrs" />
+
+  <!-- Render default slot if slot is null or undefined -->
   <slot v-else />
 </template>
 
 <script lang="ts">
 export default {
-  inheritAttrs: false,
+  inheritAttrs: false, // Ensures $attrs are manually passed
 };
 </script>
 
@@ -31,5 +34,6 @@ const props = defineProps<{
   name: CalendarSlotName;
 }>();
 
-const slot = useSlot(props.name);
+// Include null in the possible types for slot
+const slot = useSlot(props.name) as string | null | undefined;
 </script>
